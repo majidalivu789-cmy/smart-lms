@@ -1,0 +1,171 @@
+
+{% include 'header2.html' %}
+
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>{{ course.course_title }}</h3>
+    </div>
+</section>
+
+<section id="topic-container">
+    <div class="topic-header">
+        <h2 id="topic-title">Topic</h2>
+        <button class="next-btn" onclick="goToNextTopic()">Next Topic ➤</button>
+    </div>
+
+    <div class="topic-container">
+        <div class="topic-sidebar" style="max-height: 550px; overflow-y: auto;">
+            <h4>Course Topics</h4>
+            {% for week in course.weeks.all %}
+                <div class="week-title">
+                    Week-{{ week.week_number }}
+                    <i class="fa fa-minus"></i>
+                    <i class="fa fa-plus"></i> 
+                </div>
+                <ul class="topic-list show-list">
+                    {% for lecture in week.lectures.all %}
+                        <li
+                            class="topic-item"
+                            data-video-url="{{ lecture.video_url }}" 
+                            data-lecture-id="{{ lecture.id }}"
+                            id="lecture-{{ lecture.id }}"
+                            onclick="handleTopicClick(this)">
+                            <span class="lecture-text">{{ forloop.counter }} - {{ lecture.title }}</span>
+                            
+                            <span class="status-icon" style="color: #27ae60; margin-left: 5px;">
+                                {% if lecture.id in watched_lecture_ids %}
+                                    ✔
+                                {% endif %}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+
+        <div class="video-box">
+            <div id="video-wrapper" class="iframe-container" style="position: relative; padding-bottom: 56.25%; height: 0; background: #000;">
+            </div>
+
+            <div class="video-status" style="margin-top: 10px; height: 30px;">
+                <p id="watchStatus" style="font-weight: bold; font-size: 1.1em;"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+    // Show and Hide week Titles 
+   const weekTitles = document.querySelectorAll(".week-title");
+
+weekTitles.forEach(title => {
+  const plus = title.querySelector(".fa-plus");
+  const minus = title.querySelector(".fa-minus");
+  const topicList = title.nextElementSibling;
+
+  title.addEventListener('click', () => {
+    plus.classList.toggle('plus');
+    minus.classList.toggle('minus');
+    topicList.classList.toggle('show-list');
+  });
+});
+
+
+    let vimeoPlayer = null;
+    let currentTopicEl = null;
+    const allTopicItems = document.querySelectorAll(".topic-item");
+
+    function loadVideo(topicElement) {
+        const videoUrl = topicElement.getAttribute("data-video-url");
+        const lectureId = topicElement.getAttribute("data-lecture-id");
+        const lectureTitle = topicElement.querySelector(".lecture-text").innerText;
+
+        // UI Updates
+        allTopicItems.forEach(el => el.style.backgroundColor = ""); 
+        topicElement.style.backgroundColor = "#e8f0fe"; 
+        currentTopicEl = topicElement;
+        document.getElementById("topic-title").innerText = "Topic / " + lectureTitle;
+
+        // --- Permanent Status Check on Load ---
+        const iconSpan = topicElement.querySelector(".status-icon");
+        const statusDisplay = document.getElementById("watchStatus");
+        
+        if (iconSpan.innerText.trim() === "✔") {
+            statusDisplay.innerHTML = "Watched <i class='fa-solid fa-circle-check'></i>";
+            statusDisplay.style.color = "#27ae60";
+        } else {
+            statusDisplay.innerHTML = "";
+        }
+
+        // Iframe Logic
+        const wrapper = document.getElementById("video-wrapper");
+        wrapper.innerHTML = ""; 
+
+        const newIframe = document.createElement("iframe");
+        newIframe.id = "active-video";
+        newIframe.src = videoUrl;
+        newIframe.style.position = "absolute";
+        newIframe.style.top = "0";
+        newIframe.style.left = "0";
+        newIframe.style.width = "100%";
+        newIframe.style.height = "100%";
+        newIframe.setAttribute("allow", "autoplay; fullscreen");
+        newIframe.setAttribute("frameborder", "0");
+        
+        wrapper.appendChild(newIframe);
+
+        if (videoUrl.includes("vimeo.com")) {
+            vimeoPlayer = new Vimeo.Player(newIframe);
+            vimeoPlayer.on('timeupdate', function(data) {
+                if (data.percent >= 0.7) { 
+                    markAsWatched(topicElement, lectureId);
+                }
+            });
+            vimeoPlayer.on('ended', () => markAsWatched(topicElement, lectureId));
+        }
+    }
+
+    function markAsWatched(topicEl, lectureId) {
+        const iconSpan = topicEl.querySelector(".status-icon");
+        if (iconSpan.innerText.trim() === "") {
+            iconSpan.innerText = "✔";
+            document.getElementById("watchStatus").innerHTML = "Watched <i class='fa-solid fa-circle-check'></i>";
+            document.getElementById("watchStatus").style.color = "#27ae60";
+            
+            // Save to Database
+            fetch("/save-progress/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `lecture_id=${lectureId}`
+            });
+        }
+    }
+
+    function handleTopicClick(element) {
+        loadVideo(element);
+    }
+
+    function goToNextTopic() {
+        let index = Array.from(allTopicItems).indexOf(currentTopicEl);
+        if (index !== -1 && index + 1 < allTopicItems.length) {
+            loadVideo(allTopicItems[index + 1]);
+        } else {
+            alert("Course End!");
+        }
+    }
+
+    window.onload = () => {
+        if (allTopicItems.length > 0) loadVideo(allTopicItems[0]);
+    };
+</script>
+
+<style>
+    .topic-item { cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; list-style: none; display: flex; justify-content: space-between; }
+    .topic-item:hover { background-color: #f9f9f9; }
+</style>

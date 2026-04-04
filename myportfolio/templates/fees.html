@@ -1,0 +1,27 @@
+{% include 'header2.html' %}
+
+<section class="fees-wrapper-container">
+    <div class="fees-wrapper">
+    <h2>{{ enrollment.course.course_title }}</h2>
+
+    <div class="course-icon">
+        <i class="{{ enrollment.course.course_icon }}"></i>
+    </div>
+
+    <div class="fees-box">
+        <p><strong>Course Fees</strong></p>
+        <p class="amount">{{ enrollment.course.course_fees }}</p>
+
+        <form method="POST" class="pay-btn">
+            {% csrf_token %}
+            <button type="submit">
+                Pay Fees & Unlock Course
+            </button>
+        </form>
+
+        <p class="note">
+            * This is a demo payment for learning purposes.
+        </p>
+    </div>
+    </div>
+</section>

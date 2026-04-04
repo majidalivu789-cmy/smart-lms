@@ -1,0 +1,145 @@
+{% include "header.html" %}
+
+    <!-- <section>
+        <div id="about-me">
+            <div class="about-us">
+                <h2>About Us</h2>
+                <div class="details">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis inventore, quidem voluptas repellat ipsum quibusdam doloribus rerum adipisci alias accusamus beatae, repellendus a pariatur ab totam aliquam, unde facilis! Expedita.</p>
+                </div>
+            </div>
+        </div>
+
+    </section> -->
+    <section id="about">
+      <div class="banner">
+        <h2>About Smart Learn</h2>
+        <p>Empowering Students Through Smarter Learning</p>
+      </div>
+      <div class="about-slms">
+        <div class="logo-side">
+          <img src="/static/background/logo.png" alt="about-lms">
+        </div>
+        <div class="content-side">
+            {% for a in about %}
+            <h2>{{a.about_title}}</h2>
+            <p>{{a.about_des |safe}}</p>
+            {% endfor %}
+            <div class="btn">
+               <a href="/courses/"> <button>Explore Courses</button> </a>
+            </div>
+        </div>
+      </div>
+</section>
+<section>
+    <div class="key-feature">
+       
+        {% for f in features %}
+        <div class="about-feature">
+            <div class="icon"><i class="{{f.feature_icon}}"></i></div>
+            <div class="about-icon">
+                <h4>{{f.feature_user}}</h4>
+                <p>{{f.feature_title}}</p>
+            </div>
+        </div>
+        {% endfor %}
+       
+    </div>
+</section>
+<section>
+    <div class="about-mission">
+        <div class="vision">
+            <h2>Our Vission</h2>
+            <span>To transform traditional education using technology</span>
+            <div class="white">
+               <a href="/courses/"><button>Explore Courses</button> </a>
+        </div>
+        </div>
+        <div class="mission">
+            <h2>Our Mission</h2>
+            <span>To provide an all-in-one plateform where students can learn grow and succeed</span>
+            <div class="white">
+               <a href="/courses/"> <button>Explore Courses</button> </a>
+        </div>
+        </div>
+    
+    </div>
+</section>
+  <section id="testimonial-main">
+    <h2 class="testimonial-heading">Students Reviews</h2>
+    <p>What Ours Students Say About Us</p>
+   <div class="testimonial-container">
+    <div class="testimonial-wrapper">
+        <div class="testimonial">
+            <img src="/static/testimonial/woman3.jpg" alt="User">
+            <h3>Ayesha Raza</h3>
+            <p>Software Engineer</p>
+            <div class="stars">
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+            </div>
+            <p>"Majid Ali  designed my website professionally and beautifuly, I am highly impressed with his skill and work!"</p>
+        </div>
+        <div class="testimonial">
+            <img src="/static/testimonial/boy1.jpg" alt="User">
+            <h3>Ahmad Khan</h3>
+            <p>Businessman</p>
+            <div class="stars">
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+            </div>
+            <p>"I got my e-commerce website developed by Majid Ali, and it turned out exactly as i wanted. He is truly a skilled developer</p>
+        </div>
+        <div class="testimonial">
+            <img src="/static/testimonial/boy2.jpg" alt="User">
+            <h3>Rizwan Ahmed</h3>
+            <p>Web Developer</p>
+            <div class="stars">
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+            </div>
+            <p>"Working with Majid Ali was a fantastic experience. His work is of the highest quality!"</p>
+        </div>
+        <div class="testimonial">
+            <img src="/static/testimonial/boy3.jpg" alt="User">
+            <h3>Usman Javed</h3>
+            <p>Web Developer</p>
+            <div class="stars">
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+            </div>
+            <p>Excellent service! Majid Ali exceeded my expectations and made my website mobile-friendly as well.Highly recommend</p>
+        </div>
+        <div class="testimonial">
+            <img src="/static/testimonial/woman1.jpg" alt="User">
+            <h3>Sarah Malik</h3>
+            <p>Web Developer</p>
+            <div class="stars">
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-solid fa-star"></i></span>
+            </div>
+            <p>Amazing work! Majid Ali completed my website quickly and with top-notch quality. I will definitely use his services again."</p>
+        </div>
+    </div>
+
+    <div class="dots">
+        <span class="dot active" onclick="currentSlide(0)"></span>
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+    </div>
+</div>
+</section>
+{% include "footer.html" %}

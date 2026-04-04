@@ -1,0 +1,43 @@
+{% include 'header2.html' %}
+    
+ <section id="courses">
+        <h4 class="my-courses">All Courses</h4>
+        <div class="searchForm">
+            <form method="GET">
+            <input type="text" placeholder="Search here" value="" name="c_title">
+            <input type="submit" value="Search">
+        </form>
+        </div>
+    <div class="courses-container" >
+
+       {% for c in myCourses %}
+        <div class="courseElement">
+            
+            <i class="{{c.course_icon}}"></i> 
+            <h4> {{c.course_title}} </h4>
+            <p class="fees"><strong>Fee: </strong>{{c.course_fees}}</p>
+                
+           
+            <div class="enroll-btn">
+    {% if c.id in enrolled_ids %}
+        <button disabled style="background:gray;color:white;">
+            Already Enrolled
+        </button>
+    {% else %}
+        <button>
+            <a href="{% url 'course_detail' c.id %}" class="enroll-btn">
+                Enroll Now
+            </a>
+        </button>
+    {% endif %}
+    </div>
+
+            
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+</body>
+</html>

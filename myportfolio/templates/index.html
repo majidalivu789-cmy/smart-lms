@@ -1,0 +1,114 @@
+<!-- Heder Part include -->
+ {% include "header.html" %}
+<section id="hero"><!--Hero Section-->
+        <div class="hero-des">
+        <div class="name">
+              <h2 class="smart">Learn Smart. Grow Fast.</h2>
+        </div>
+        
+        <div class="animated-text">
+            <span></span>
+        </div>
+        
+        <div class="btn">
+            <button><a href="/login/">Join Now</a></button>
+        </div>
+    </div>
+    </section>
+
+   
+    <section id="projects"> <!--Top Courses-->
+        <h2>Top Courses</h2>
+        <div class="project-container">
+          {% for n in topCourses %}
+          <div class="project-card ">
+
+            <img src="/media/{{n.course_image}}" alt="Portfolio Project">
+            <h3>{{n.course_title}}</h3>
+            <p>{{n.course_des}}</p>
+            <div class="duration">
+              <div class="time">
+                <i class="fa-regular fa-clock"></i><span>{{n.course_duration}}</span>
+              </div>
+              <div class="price">
+                <strong>{{n.course_price}}</strong>
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+          
+        </div>
+        <div class="views-courses">
+            <button><a href="/courses/">View All Courses</a></button>
+          </div>
+      </section>
+
+ <!-- instructor Portion -->
+ <section id="instructor-section">
+  
+    <div class="founder-msg"><!--founder message-->
+     {% for f in founder_msg %}
+      <div class="image">   
+        <span>{{f.visit_founder}}</span>     
+      </div>
+      <div class="msg">
+        <h3>{{f.message_title}}</h3>
+        <p>{{f.founder_message}}</p>
+        <strong>{{f.founder_name}}</strong>
+
+      </div>
+      {% endfor %}
+    </div>
+  <h2>Expert Instructor</h2>
+  <div class="instructor-slider">
+
+    <div class="instructor-track">
+    {% for i in instructor %}
+    <div class="instructor-pic">
+      <div class="instruct-profile">
+        <img src="/media/{{i.instruct_img}}" alt="">
+      </div>
+      
+      <h3>{{i.instruct_name}}</h3>
+      <div class="content">
+        <h4>{{i.instruct_skill}}</h4>
+        <div class="des">
+          <p>{{i.about_instruct}}</p>
+        </div>
+      </div>
+  </div>
+    {% endfor %}  
+  </div>
+ </section>
+ 
+
+ <section id="features">
+ <div>
+  <h2>Our Features</h2>
+ </div>
+  <div class="features">
+    {% for f in Features %}
+    <div class="items"><!--item start-->
+      <div class="icon">
+        <img src="{{f.feature_icon}}" alt="icon">
+        <h5>{{f.feature_title}}</h5>
+      </div>
+      <div class="des">
+       <p>{{f.feature_des}}</p> 
+      </div>
+    </div><!--item end-->
+    {% endfor %}
+  </div>
+ </section>
+
+ <section>
+  <div class="frelan-baner">
+    <h2>Be Your Own Boss By Learning Freelancing Skills</h2>
+    <div class="btn">
+            <button><a href="/login/">Join Now</a></button>
+        </div>
+  </div>
+</section>
+    <!-- Footer part -->
+     {% include "footer.html" %}

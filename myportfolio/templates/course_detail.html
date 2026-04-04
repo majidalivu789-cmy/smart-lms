@@ -1,0 +1,81 @@
+{% include 'header2.html' %}
+{% load static %}
+
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>Course Details</h3>
+        <ul class="menu">
+            <li><a href="#"><i class="fa-solid fa-home "></i>Home</a></li>
+        </ul>
+
+    </div>
+</section>
+<section class="course-detail-wrapper">
+
+    <div class="course-card">
+
+        <!-- Header -->
+        <div class="course-header">
+            <i class="{{ course.course_icon }}"></i>
+            <div class="course-title">
+                <h2>{{ course.course_title }}</h2>
+                <p><strong>Course Fee:</strong> {{ course.course_fees }}</p>
+            </div>
+        </div>
+
+        <!-- Course Info -->
+        <div class="course-info">
+            <p>
+                <span><i class="fa-solid fa-circle-check"></i></span>
+                Full access to all weeks & lectures
+            </p>
+            <p>
+                <span><i class="fa-solid fa-circle-check"></i></span>
+                Learn at your own pace
+            </p>
+            <p>
+                <span><i class="fa-solid fa-circle-check"></i></span>
+                Dashboard video access
+            </p>
+            <p>
+                <span><i class="fa-solid fa-circle-check"></i></span>
+                Certificate after completion
+            </p>
+        </div>
+
+        <!-- Confirmation Message -->
+        <div class="course-warning">
+            <span><i class="fa-solid fa-triangle-exclamation"></i></span>
+           <p>Please confirm before enrolling.  
+            This course will be unlocked on your dashboard after enrollment.</p> 
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="course-actions">
+
+            {% if enrollment %}
+                {% if enrollment.is_paid %}
+                    <button class="btn-disabled" disabled>
+                        ✔ Already Enrolled
+                    </button>
+                {% else %}
+                    <a href="{% url 'fees_page' enrollment.id %}" class="btn-payment">
+                        Proceed to Payment
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'enroll_course' course.id %}" class="btn-confirm">
+                    Confirm Enrollment
+                </a>
+            {% endif %}
+
+            <a href="{% url 'mycourses' %}" class="btn-back">
+                <span><i class="fa-solid fa-arrow-left"></i></span> 
+                Back to Courses
+            </a>
+
+        </div>
+
+    </div>
+
+</section>

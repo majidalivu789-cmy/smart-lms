@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/static/signUp.css">
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+<div class="signUp-container">
+    <div class="wraper">
+        <div class="lms">
+                <div class="logo">
+                    <img src="/static/background/logo.png" alt="">
+                </div> 
+                <p>Smart Learn</p>
+        
+             </div>
+        <form  onsubmit=" return validSignup()" method="post">
+            {% csrf_token %}
+            <div class="input-box">
+                <label for="fname" class="form-label">Full Name</label>
+                <input type="text" name="fname" id="fname" placeholder="full name" required value="{{fname}}">
+                
+            </div>
+            
+            <div class="input-box">
+                <label for="email2" class="form-label">Email Addresses</label>
+                <input type="email" name="email2" id="email2"  placeholder="john@gmail.com" value="{{email}}">
+            </div>
+            <div class="input-box">
+                <label for="password2" class="form-label">Create Password</label>
+                <input type="password" name="password2" id="password2"  placeholder="Min. 8 Chracters" value="{{password}}">
+               
+            </div>
+            <div class="register-btn">
+                <button type="submit">Register</button>
+            </div>
+        </form>
+        <div class="sign-here">
+            <p>Already have an account?<a href="/login/">Login</a></p>
+        </div>
+    </div>
+    </div>
+    <script>
+        function validSignup(){
+            const email2 = document.getElementById('email2').value;
+            const password2 = document.getElementById('password2').value;
+           
+        if(email2 === "" || !email2.inculdes('@')){
+            alert('Check Email');
+        }
+        else if(password2 === ''){
+            alert('Enter Password');
+        }
+    
+        }
+        
+
+    </script>
+</body>
+</html>

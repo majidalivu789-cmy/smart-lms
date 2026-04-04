@@ -1,0 +1,87 @@
+{% include "header2.html" %}
+
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>Quiz Detail</h3>
+        <ul class="menu">
+            <li><a href="/dashboard/"><i class="fa-solid fa-home "></i>Home</a></li>
+        </ul>
+
+    </div>
+</section>
+<section class="quiz-section">
+    <div class="quiz-container">
+        
+        <div class="instruction-card">
+            <h3><i class="fas fa-exclamation-circle"></i> Important Instructions</h3>
+            <div class="info-grid">
+                <div class="info-item"><i class="fas fa-question-circle"></i> Multiple Choice Questions</div>
+                <div class="info-item"><i class="fas fa-clock"></i> Timed Sessions</div>
+                <div class="info-item"><i class="fas fa-check-double"></i> 80% Passing Marks</div>
+                <div class="info-item"><i class="fas fa-shield-alt"></i> No Negative Marking</div>
+                <div class="info-item"><i class="fas fa-magic"></i> Auto-submit on Timeout</div>
+                <div class="info-item"><i class="fas fa-sync-alt"></i> Do Not Refresh Page</div>
+            </div>
+        </div>
+
+<div class="quiz-grid">
+        {% for q in quizzes %}
+    {% comment %} <div class="quiz-card">
+        <div>
+            <div class="quiz-icon"><i class="{{ q.icon }}"></i></div>
+            <h4>{{ q.title }}</h4>
+            <div class="quiz-details">
+                <p>{{ q.total_questions }} Questions</p>
+                <p>{{ q.time }} Minutes</p>
+            </div>
+        </div>
+             <a href="/quiz-app/{{ q.id }}/" class="start-btn">Start Quiz</a>
+        </div>
+            {% endfor %}
+    </div> {% endcomment %}
+    <div class="quiz-card" style="position: relative;">
+        {% if q.expiry_date %}
+    <div style="position: absolute; top: 15px; right: 20px; background: rgba(239, 68, 68, 0.1); 
+                color: #ef4444; padding: 4px 10px; font-size: 11px; font-weight: bold; 
+                border-bottom-right-radius: 10px;">
+        <i class="fas fa-clock"></i> Ends: {{ q.expiry_date|date:"d M" }}
+    </div>
+    {% endif %}
+    <div>
+        <div class="quiz-icon"><i class="{{ q.icon }}"></i></div>
+        <h4>{{ q.title }}</h4>
+        <div class="quiz-details">
+            <p>{{ q.total_questions }} Questions</p>
+            <p>{{ q.time }} Minutes</p>
+        </div>
+    </div>
+    
+    {% if q.is_disabled %}
+        <button class="start-btn" style="background: #bdc3c7; cursor: not-allowed; border: none;" disabled>
+            {% if q.already_done %}Completed{% elif q.is_expired %}Expired{% else %}Locked{% endif %}
+        </button>
+    {% else %}
+        <a href="/quiz-app/{{ q.id }}/" class="start-btn">Start Quiz</a>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+</section>
+    
+
+    <script>
+        function startQuiz(quizName) {
+            // Visual feedback for the button click
+            console.log("Initializing " + quizName + "...");
+            
+            // Simulating a transition to the actual quiz environment
+            const confirmEntry = confirm("Are you sure you want to start the " + quizName + "? The timer will begin immediately.");
+            
+            if (confirmEntry) {
+                alert("Good luck! Redirecting to " + quizName + " interface...");
+                // In a real LMS, you would use: window.location.href = "quiz-page.html?subject=" + quizName;
+            }
+        }
+    </script>
+</body>
+</html>

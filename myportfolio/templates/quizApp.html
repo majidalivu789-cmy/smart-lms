@@ -1,0 +1,276 @@
+{% include "header2.html" %}
+
+<!-- <section class="profile-header">
+    <div class="profile-nav">
+        <h3>Quizz</h3>
+        <ul class="menu">
+            <li><a href="/dashboard/"><i class="fa-solid fa-home "></i>Home</a></li>
+        </ul>
+    </div>
+</section> -->
+
+<main id="quiz-app">
+<!-- ----- Quiz Container -----  -->
+<section>
+    <div id="quiz-container" class="quiz-card">
+        <div class="card-header">
+            <div class="q-count">Question <span id="current-num">1</span>/<span id="total-num">4</span></div>
+            <div id="timer">05:00</div>
+        </div>
+
+        <div class="progress-wrapper">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <div class="card-body">
+            <h2 id="question-text" class="question-text">Loading...</h2>
+            <div id="options-container" class="options-grid"></div>
+        </div>
+
+        <div class="card-footer">
+            <button id="prev-btn" class="btn-link" onclick="changeQuestion(-1)">Back</button>
+            <div class="actions">
+                <button id="next-btn" class="btn-action" onclick="changeQuestion(1)">Next</button>
+                <button id="submit-btn" class="btn-action d-none" onclick="submitQuiz()" style="background: var(--gradient);">Finish</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ------- Result Container ----- -->
+ <section>
+    <div id="result-container" class="quiz-card d-none">
+        <div class="result-container">
+            <h2 style="margin-bottom: 30px; color: var(--text-dark);">Assessment Report</h2>
+            <div class="score-circle" id="res-score-box">0</div>
+            
+            <div class="stats-row">
+                <div class="stat-item"><span>Accuracy</span><b id="res-percent">0%</b></div>
+                <div class="stat-item"><span>Correct</span><b id="res-correct" style="color: #22c55e;">0</b></div>
+                <div class="stat-item"><span>Wrong</span><b id="res-wrong" style="color: #ef4444;">0</b></div>
+            </div>
+
+            <h3 id="pass-fail-msg" style="margin-bottom: 20px;"></h3>
+            <button class="btn-action" onclick="location.reload()" style="width: 100%;">Restart Quiz</button>
+        </div>
+    </div>
+</section>
+
+</main>
+<!-- <script>
+    const quizData = {{ quiz_data|safe }};
+
+    let currentIdx = 0;
+    let userAnswers = {};
+    let timeLeft = {{ quiz_time }} * 60;
+    let timerInt;
+
+    function init() {
+        document.getElementById('total-num').innerText = quizData.length;
+        startTimer();
+        render();
+    }
+
+    function render() {
+        const q = quizData[currentIdx];
+        document.getElementById('question-text').innerText = q.question;
+        document.getElementById('current-num').innerText = currentIdx + 1;
+        
+        const optContainer = document.getElementById('options-container');
+        optContainer.innerHTML = '';
+
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerText = opt;
+            btn.classList.add('option-btn');
+            if (userAnswers[currentIdx] === opt) btn.classList.add('selected');
+            btn.onclick = () => {
+                userAnswers[currentIdx] = opt;
+                render();
+            };
+            optContainer.appendChild(btn);
+        });
+
+        document.getElementById('prev-btn').style.visibility = currentIdx === 0 ? "hidden" : "visible";
+        
+        if (currentIdx === quizData.length - 1) {
+            document.getElementById('next-btn').classList.add('d-none');
+            document.getElementById('submit-btn').classList.remove('d-none');
+        } else {
+            document.getElementById('next-btn').classList.remove('d-none');
+            document.getElementById('submit-btn').classList.add('d-none');
+        }
+
+        document.getElementById('progress-bar').style.width = ((currentIdx + 1) / quizData.length * 100) + "%";
+    }
+
+    function startTimer() {
+        timerInt = setInterval(() => {
+            let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+            document.getElementById('timer').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            if (timeLeft-- <= 0) { clearInterval(timerInt); submitQuiz(); }
+        }, 1000);
+    }
+
+    function changeQuestion(val) { currentIdx += val; render(); }
+
+    // function submitQuiz() {
+    //     clearInterval(timerInt);
+    //     let score = 0;
+    //     quizData.forEach((d, i) => { if (userAnswers[i] === d.correctAnswer) score++; });
+        
+    //     document.getElementById('quiz-container').classList.add('d-none');
+    //     document.getElementById('result-container').classList.remove('d-none');
+    //     document.getElementById('res-score-box').innerText = `${score}/${quizData.length}`;
+    //     document.getElementById('res-percent').innerText = ((score / quizData.length) * 100).toFixed(0) + "%";
+    //     document.getElementById('res-correct').innerText = score;
+    //     document.getElementById('res-wrong').innerText = quizData.length - score;
+        
+    //     const msg = document.getElementById('pass-fail-msg');
+    //     msg.innerText = (score/quizData.length) >= 0.5 ? "Excellent Work!" : "Keep Practicing!";
+    //     msg.style.color = (score/quizData.length) >= 0.5 ? "var(--primary)" : "#ef4444";
+        
+    // }
+    function submitQuiz() {
+    clearInterval(timerInt);
+    let score = 0;
+    quizData.forEach((d, i) => { if (userAnswers[i] === d.correctAnswer) score++; });
+
+    // AJAX call to save data in database
+    fetch("/save-quiz-result/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            quiz_id: "{{ quiz.id }}",
+            score: score,
+            total: quizData.length
+        })
+    }).then(response => {
+        // Purana result display logic
+        document.getElementById('quiz-container').classList.add('d-none');
+        document.getElementById('result-container').classList.remove('d-none');
+        document.getElementById('res-score-box').innerText = `${score}/${quizData.length}`;
+        document.getElementById('res-percent').innerText = ((score / quizData.length) * 100).toFixed(0) + "%";
+        document.getElementById('res-correct').innerText = score;
+        document.getElementById('res-wrong').innerText = quizData.length - score;
+        
+        const msg = document.getElementById('pass-fail-msg');
+        msg.innerText = (score/quizData.length) >= 0.5 ? "Excellent Work!" : "Keep Practicing!";
+        msg.style.color = (score/quizData.length) >= 0.5 ? "#2ecc71" : "#ef4444";
+        
+    });
+}
+
+    init();
+
+    //===== Disabled Button==
+    
+</script> -->
+<script>
+    const quizData = {{ quiz_data|safe }};
+    let currentIdx = 0;
+    let userAnswers = {};
+    let timeLeft = {{ quiz_time }} * 60;
+    let timerInt;
+
+    function init() {
+        document.getElementById('total-num').innerText = quizData.length;
+        startTimer();
+        render();
+    }
+
+    function render() {
+        const q = quizData[currentIdx];
+        document.getElementById('question-text').innerText = q.question;
+        document.getElementById('current-num').innerText = currentIdx + 1;
+        
+        const optContainer = document.getElementById('options-container');
+        optContainer.innerHTML = '';
+
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerText = opt;
+            btn.classList.add('option-btn');
+            if (userAnswers[currentIdx] === opt) btn.classList.add('selected');
+            btn.onclick = () => {
+                userAnswers[currentIdx] = opt;
+                render();
+            };
+            optContainer.appendChild(btn);
+        });
+
+        document.getElementById('prev-btn').style.visibility = currentIdx === 0 ? "hidden" : "visible";
+        
+        if (currentIdx === quizData.length - 1) {
+            document.getElementById('next-btn').classList.add('d-none');
+            document.getElementById('submit-btn').classList.remove('d-none');
+        } else {
+            document.getElementById('next-btn').classList.remove('d-none');
+            document.getElementById('submit-btn').classList.add('d-none');
+        }
+
+        document.getElementById('progress-bar').style.width = ((currentIdx + 1) / quizData.length * 100) + "%";
+    }
+
+    function startTimer() {
+        timerInt = setInterval(() => {
+            let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+            document.getElementById('timer').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            if (timeLeft-- <= 0) { 
+                clearInterval(timerInt); 
+                submitQuiz(); 
+            }
+        }, 1000);
+    }
+
+    function changeQuestion(val) { 
+        currentIdx += val; 
+        render(); 
+    }
+
+    // --- Ye function database mein result save karega ---
+    function submitQuiz() {
+        clearInterval(timerInt);
+        let score = 0;
+        quizData.forEach((d, i) => { 
+            if (userAnswers[i] === d.correctAnswer) score++; 
+        });
+
+        fetch("/save-quiz-result/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                quiz_id: "{{ quiz.id }}",
+                score: score,
+                total: quizData.length
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Result UI Update
+            document.getElementById('quiz-container').classList.add('d-none');
+            document.getElementById('result-container').classList.remove('d-none');
+            
+            document.getElementById('res-score-box').innerText = `${score}/${quizData.length}`;
+            document.getElementById('res-percent').innerText = ((score / quizData.length) * 100).toFixed(0) + "%";
+            document.getElementById('res-correct').innerText = score;
+            document.getElementById('res-wrong').innerText = quizData.length - score;
+            
+            const msg = document.getElementById('pass-fail-msg');
+            const isPassed = (score / quizData.length) >= 0.5;
+            msg.innerText = isPassed ? "Excellent Work!" : "Keep Practicing!";
+            msg.style.color = isPassed ? "#22c55e" : "#ef4444";
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    init();
+</script>
+</body>
+</html>

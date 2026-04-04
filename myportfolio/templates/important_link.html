@@ -1,0 +1,74 @@
+{% include "header2.html" %}
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>Links</h3>
+        <ul class="menu">
+            <li><a href="/dashboard/"><i class="fa-solid fa-home "></i>Home</a></li>
+        </ul>
+
+    </div>
+</section>
+<!-- importan Links -->
+
+
+<main class="main-container">
+
+<!-- --- Header --- -->
+ <section>
+    <div class="header-container">
+        <div class="icon">
+            <span><i class="fa-solid fa-folder"></i></span>
+        </div>
+        <div class="title">
+            <h2>Important Links</h2>
+            <p>Access useful course resources and tools</p>
+
+        </div>
+    </div>
+ </section>
+
+ <!-- --- Link Box --- -->
+  <section id="list-container">
+    
+        <div class="links-list-container">
+
+            {% for i in links %}
+            <div class="link-row">
+
+                <div class="link-items-left">
+
+                    <div class="icon">
+                        <span class="icon-bg"><i class="{{i.link_icon}}"></i></span>
+                    </div>
+
+                    <div class="about-link">
+                        <h2>{{i.link_title}}<span class="pulse-badge">NEW</span></h2>
+                        <p>{{i.link_desc}}</p>
+                    </div>
+                </div>
+
+                <div class="link-items-right">
+
+                    <div class="link-date">
+                        <p>{{i.created_at}}</p>
+                    </div>
+                    <div class="link-btn">
+                        <a href="{{i.important_link}}">Open Link</a>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+  </section>
+
+<script>
+    window.addEventListener('load', ()=>{
+        let icon = document.querySelectorAll('.icon-bg');
+         let colors = ['#0652DD', '#2ed573', '#D980FA', '#0a3d62', '#b71540', '#182C61'];
+            for(let i = 0; i < icon.length; i++){
+                icon[i].style.backgroundColor = colors[i];
+            }
+    })
+</script>
+</main>

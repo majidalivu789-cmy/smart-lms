@@ -1,0 +1,204 @@
+{% include 'header2.html' %}
+
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>Home</h3>
+    </div>
+</section>
+
+<section id="progress-pg">
+    <div class="progress-box">
+        <div class="card">
+            <div class="icon">
+                <span class="icon-bg"><i class="fa-solid fa-arrow-trend-up"></i></span> 
+            </div>
+            <div class="content">
+                 <p>Your Progress</p>
+                 <h2>{{ progress_percent }}%</h2>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="icon">
+                <span class="icon-bg"><i class="fa-regular fa-circle-check"></i></span> 
+            </div>
+            <div class="content">
+                 <p>Courses Done</p>
+                 <h2>{{ enrollments.count }}</h2>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="icon">
+                <span class="icon-bg"><i class="fa-solid fa-clipboard-question"></i></span> 
+            </div>
+            <div class="content">
+                 <p>Quizes Passed</p>
+                 <h2>{{ total_quizzes }}</h2>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="icon">
+                <span class="icon-bg"><i class="fa-regular fa-star"></i></span> 
+            </div>
+            <div class="content">
+                 <p>Avg.Scored</p>
+                 <h2>{{ avg_score }}%</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="dashboard-content-grid">
+        <div class="card chart-card">
+            <h3><i class="fas fa-chart-bar"></i> Weekly Learning Progress</h3>
+            <div class="chart-container" style="display: flex; height: 200px; align-items: flex-end; padding-bottom: 20px;">
+                <div class="chart-y-axis" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding-right: 10px; font-size: 12px; color: #888;">
+                    <span>8h</span><span>6h</span><span>4h</span><span>2h</span><span>0h</span>
+                </div>
+                <div class="bars-wrapper" style="display: flex; justify-content: space-around; width: 100%; height: 100%; border-bottom: 1px solid #eee; align-items: flex-end;">
+                    {% for day in week_data %}
+                        <div class="bar-fill" 
+                             style="height: {{ day.height }}%; width: 30px; background: linear-gradient(180deg, #6a59ff 0%, #897aff 100%); border-radius: 5px 5px 0 0; transition: 0.5s;" 
+                             title="{{ day.hours }} hours">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="chart-labels" style="display: flex; justify-content: space-around; margin-left: 30px; margin-top: 10px;">
+                {% for day in week_data %}
+                    <span style="font-size: 12px; color: #666;">{{ day.day }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card courses-card">
+            <h3><i class="fas fa-book-open"></i> Course Progress Breakdown</h3>
+            <div class="course-list">
+                {% for item in course_progress %}
+                <div class="course-item">
+                    <div class="course-info">
+                        <h4>{{ item.course.course_title }}</h4>
+                        <span>{{ item.watched }}/{{ item.total }} Lessons Completed</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar-wrap">
+                            <div class="progress-fill" data-percent="{{ item.percent }}">0%</div>
+                        </div>
+                    </div>
+                    <div class="course-footer">
+                        <span class="activity">
+                            {% if item.percent == 100 %}
+                                Completed <i class="fa-solid fa-circle-check" style="color:#27ae60;"></i>
+                            {% elif item.watched > 0 %}
+                                Last active: In Progress
+                            {% else %}
+                                Not Started
+                            {% endif %}
+                        </span>
+                        <a href="{% url 'video_page' item.course.id %}">
+                            <button class="btn-continue">
+                                Continue <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card quiz-card">
+            <h3><i class="fas fa-vial"></i> Quiz Performance</h3>
+            <div class="quiz-stats-grid">
+                <div class="circular-progress-box">
+                    <div class="circular-progress" id="avgQuizProgress" data-score="{{ avg_score }}">
+                        <span class="progress-value">0%</span>
+                    </div>
+                    <p>Average Score</p>
+                </div>
+                <div class="stat-list">
+                    <div class="stat-row"><i class="fas fa-tasks text-blue"></i> Quizzes: <strong>{{ total_quizzes }}</strong></div>
+                    <div class="stat-row"><i class="fas fa-trophy text-gold"></i> Highest: <strong>{{ highest }}%</strong></div>
+                    <div class="stat-row"><i class="fas fa-chart-line text-red"></i> Lowest: <strong>{{ lowest }}%</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card achievements-card">
+            <h3><i class="fas fa-award"></i> Achievements & Badges</h3>
+            <div class="badge-grid">
+                <div class="badge-item">
+                    <div class="badge-icon fast-learner"><i class="fas fa-bolt"></i></div>
+                    <h5>Fast Learner</h5>
+                    <p>Completed 3 lessons in one day</p>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon quiz-master"><i class="fas fa-star"></i></div>
+                    <h5>Quiz Master</h5>
+                    <p>10 Consecutive quizzes passed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Circle Progress Logic
+    const circularProgress = document.getElementById('avgQuizProgress');
+    if (circularProgress) {
+        const progressValue = circularProgress.querySelector('.progress-value');
+        let progressEndValue = parseInt(circularProgress.getAttribute('data-score')) || 0;
+        let progressStartValue = 0;
+        let speed = 30;
+
+        if (progressEndValue > 0) {
+            let progress = setInterval(() => {
+                progressStartValue++;
+                if (progressValue) progressValue.textContent = `${progressStartValue}%`;
+                circularProgress.style.background = `conic-gradient(#6a59ff ${progressStartValue * 3.6}deg, #ededed 0deg)`;
+                if (progressStartValue >= progressEndValue) clearInterval(progress);
+            }, speed);
+        } else {
+            if (progressValue) progressValue.textContent = "0%";
+        }
+    }
+
+    // 2. Course Progress Animation
+    const progressFills = document.querySelectorAll('.progress-fill');
+    setTimeout(() => {
+        progressFills.forEach(fill => {
+            const target = parseInt(fill.getAttribute('data-percent')) || 0;
+            fill.style.width = target + '%';
+            let count = 0;
+            if (target > 0) {
+                let interval = setInterval(() => {
+                    if (count >= target) {
+                        clearInterval(interval);
+                        fill.innerText = target + '%';
+                    } else {
+                        count++;
+                        fill.innerText = count + '%';
+                    }
+                }, 20);
+            }
+        });
+    }, 500);
+
+    // 3. Card Colors Logic
+    let iconBg = document.getElementsByClassName('icon-bg');
+    let cardBorder = document.querySelectorAll('#progress-pg .card');
+    let colors = ["#8e44ad","#f39c12","#27ae60","#e84393"];
+    for(let i = 0; i < cardBorder.length; i++){
+        if(colors[i]) {
+            cardBorder[i].style.borderLeft = `5px solid ${colors[i]}`;
+            if(iconBg[i]) iconBg[i].style.backgroundColor = colors[i];
+        }
+    }
+});
+</script>

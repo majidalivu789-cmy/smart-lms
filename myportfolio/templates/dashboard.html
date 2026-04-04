@@ -1,0 +1,81 @@
+{% include 'header2.html' %}
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>Home</h3>
+    </div>
+</section>
+
+<section id="course-panel">
+    <div class="panel-box">
+
+        <div class="panel">
+
+        <div class="enroll-now">
+            <h4>My Course</h4>
+            <div class="enroll-btn">
+            <a href="/mycourses" class="enroll"><i class="fa-solid fa-list"></i>Enroll Now</a>
+            </div>
+
+        </div>
+        
+        <div class="show-courses">
+
+            {% if enrollments %}
+            {% for e in enrollments  %}
+            <div class="course1">
+                <span><i class="{{e.course.course_icon}}"></i></span>
+                <a href="{% url 'video_page' e.course.id %}">{{e.course.course_title}}</a>
+            </div>
+
+            {% endfor %}
+            {% else %}
+                <p> No paid course yet </p>
+            {% endif %}
+        </div>
+
+        </div>
+        
+         <div class="activities">
+            <div class="panel2">
+            <h4>My Activities</h4>
+            <div class="ac-box">
+                <div class="ac-list">
+                    <span><i class="fa-solid fa-rectangle-list"></i></span>
+                    <a href="/exercise/">Exercises</a>
+                </div>
+                <div class="ac-list">
+                    <span><i class="fa-solid fa-circle-question"></i></span>
+                    <a href="/quiz-detail/">Quizzes</a>
+                </div>
+                <div class="ac-list">
+                    <span><i class="fa-solid fa-comments"></i></span>
+                    <a href="">Discussions</a>
+                </div>
+            </div>
+         </div>
+         <div class="panel2">
+            <h4>Notice Board</h4>
+
+            <div class="ac-box">
+                <div class="ac-list">
+                    <span><i class="fa-regular fa-newspaper"></i></span>
+                    <a href="/news-events/">News & Events</a>
+                </div>
+                <div class="ac-list">
+                    <span><i class="fa-solid fa-link"></i></span>
+                    <a href="/links/">Important Links</a>
+                </div>
+
+            </div>
+
+
+         </div>
+
+         </div>
+    </div>
+
+</section>
+
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+{% include "header.html" %}
+<!-- Message here -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+    <section id="Contact-me">
+        <h2 class="contact-heading">Contact</h2>
+        <div class="contact-container">
+            <div class="map-side">
+                {% for map in map_side %}
+                <div class="contact-src">
+                    <span><i class="fa-solid fa-location-dot"></i></span>
+                    <h3>Address</h3>
+                     <p>{{map.Address}}</p>
+                </div>
+                <div class="contact-src">
+                    <span><i class="fa-solid fa-phone"></i></span>
+                    <h3>Call Us</h3>
+                    <p>{{map.PhoneNumber}}</p>
+                </div>
+                <div class="contact-src">
+                    <span><i class="fa-solid fa-envelope"></i></span>
+                    <h3>Email Us</h3>
+                    <p>{{map.Email}}</p>
+                </div>
+                <iframe 
+                src="{{map.MapLink}}" 
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+            {% endfor %}
+            </div>
+            
+            <div class="message-side">
+                <form action="" method="post">
+                    {% csrf_token %}
+
+                <div class="input-box">
+                <div class="input-item">
+                    <label for="name">Your Name</label>
+                     {{ form.name }}
+                </div>
+                <div class="input-item">
+                    <label for="email">Your Email</label>
+                     {{ form.email }}
+                </div>
+            </div>
+                <div class="subject">
+                    <label for="subject">Subject</label>
+                     {{ form.subject }}
+                </div>
+                <div class="text-area">
+                    <label for="message">Message</label>
+                    {{ form.message }}
+                </div>
+                <div class="btn">
+                    <button>Send Message</button>
+                </div> 
+            </form>
+            </div>
+        </div>
+    </section>
+{% include "footer.html" %}
+    

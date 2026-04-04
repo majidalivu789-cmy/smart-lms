@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Learn</title>
+    <link rel="icon" type="png" href="/static/background/logo.png"><!--link icon-->
+    <link rel="stylesheet" href="/static/style_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+</head>
+<body>
+
+<section>
+        <nav class="sidebar close">
+            <header>
+                <div class="image-text">
+                    <span class="image">
+                        <!-- <img src="/static/background/logo.png" alt=""> -->
+                         <span><i class="fa fa-book-open"></i></span>
+                    </span>
+                    <div class="text header-text">
+                        <span class="name">LMS</span>
+                        <span class="profession">
+                            Dashboard
+                        </span>
+                    </div>
+
+
+                </div>
+                <i class="fa-solid fa-chevron-right toggle"></i>
+            </header>
+            
+            <div class="menu-bar">
+                <div class="menu">
+                  
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="/dashboard/" class="{% if request.path == '/dashboard/' %} active {% endif %}">
+                                <i class="fa-solid fa-home icon"></i>
+                                <span class="text nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                         <li class="nav-link">
+                            <a href="/profile/" class="{% if request.path == '/profile/' %} active {% endif %}">
+                                <i class="fa-solid fa-user icon"></i>
+                                <span class="text nav-text">Profile</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-link">
+                            <a href="/mycourses/" class="{% if request.path == '/mycourses/' %} active {% endif %}">
+                                <i class="fa-solid fa-book icon"></i>
+                                <span class="text nav-text">Courses</span>
+                            </a>
+                        </li>
+                       
+
+                        <li class="nav-link">
+                            <a href="/progress/" class="{% if request.path == '/progress/' %} active {% endif %}">
+                                <i class="fa-solid fa-chart-line icon"></i>
+                                <span class="text nav-text">Progress Outlines</span>
+                            </a>
+                        </li>
+                        
+                       
+                    </ul>
+
+                </div>
+
+                <div class="bottom-content">
+
+                    <li class="">
+                            <a href="/logout/">
+                                <i class="fa-solid fa-sign-out icon"></i>
+                                <span class="text nav-text">Logout</span>
+                            </a>
+                        </li>
+                    
+
+                </div>
+            </div>
+        </nav>
+
+
+        <div  class="home">
+            
+            <div class="logo">
+            <a href=""><img src="/static/background/logo.png" alt=""></a>
+            <h2>Smart Learn</h2>
+            </div>
+
+        <div class="lms"><h2>Learning Management System</h2></div>
+
+        <div class="aboutInfo">
+            <div class="profile"><a href="/profile/"><img src="{{profile.photo.url}}" alt=""></a></div>
+            <div class="name"><p>Majid Ali</p></div>
+            
+        </div>
+
+
+        </div>
+       
+</section>
+
+<!-- --------JavaScript------  -->
+<script src="/static/dashboards.js"></script>

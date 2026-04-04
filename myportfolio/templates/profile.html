@@ -1,0 +1,136 @@
+{% include 'header2.html' %}
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>My Profile</h3>
+        <ul class="menu">
+            <li><a href="/dashboard/"><i class="fa-solid fa-home "></i>Home</a></li>
+            <li><i class="fa-solid fa-chevron-right "></i></li>
+            <li><a href="/profile/"><i class="fa-solid fa-book "></i>My Profile</a></li>
+        </ul>
+
+    </div>
+</section>
+    <section id="profile-box">
+        <div class="profile-box">
+
+            <!--Dynamic Image-->
+            <div class="profile-img">
+                <img src="{{ profile.photo.url }}">
+               <i class="fa-solid fa-camera camera-icon" onclick="document.getElementById('imgInput').click();"></i>
+
+               <!--Hidden Form-->
+               <form  method="POST" enctype="multipart/form-data" id="imageForm">
+                {% csrf_token %}
+                <input type="file" name="photo" id="imgInput" accept="image/*" style="display: none;" onchange="document.getElementById('imageForm').submit();">
+               </form>
+
+            </div>
+            
+            <div class="edu-email">
+                <div class="edu">
+                    <h4><i class="fa-solid fa-book "></i>Education</h4>
+                    <p>Bechelors-Computer Science</p>
+                </div>
+                <div class="edu">
+                    <h4><i class="fa-solid fa-envelope "></i>Email</h4>
+                    <p>majidalivu789@gmail.com</p>
+                </div>
+                
+                
+            </div>
+            
+        </div> 
+
+
+
+
+        <div class="perInfo">
+            <div class="container">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="info">
+                        <h4>Personal Information</h4>
+                    </div>
+                    <div class="name-box">
+                        
+                         <div class="name-input">
+                            {{form.name}}
+                        </div>
+        
+                    </div>
+
+                    <h4>Gender</h4>
+                    <div class="gender-box">
+                        
+                        <div class="gender-input">
+                            {{form.gender}}
+                        </div>
+                        
+                    </div>
+                     <h4>Date of Birth</h4>
+                    <div class="birth-box">
+                       
+                        <div class="birth-input">
+                         {{form.date_of_birth}}
+                        </div>
+                        
+                    </div>
+                    <h4>CNIC / B-Form</h4>
+                    <div class="cnic-box">
+
+                        <div class="cnic-input">
+                            {{form.cnic}}
+                        </div>
+                        
+                
+                    </div>
+                     <div class="country-box">
+                        <div class="country-input">
+                            <label for="country">Country</label>
+                           {{form.country}}
+                        </div>
+                        <div class="country-input">
+                            <label for="nationality">Province</label>
+                            {{form.province}}
+                        </div>
+                        <div class="country-input">
+                            <label for="city">District</label>
+                            {{form.district}}
+                        </div>
+                     </div>
+                     
+                     <div class="mail-box">
+                        <div class="input-mail">
+                            <label for="mail">Address</label>
+                            {{form.address}}
+                        </div>
+                     </div>
+                     <h4>Mobile</h4>
+                     <div class="mbl-box">
+                        <div class="mbls-input">
+                            {{form.phone_code}}
+                        </div>
+                        <div class="mbl-input">
+                            {{form.phone}}
+                        </div>
+
+                     </div>
+                     <h4>Qualification</h4>
+                     <div class="quali">
+                        <div class="quali-input">
+                            {{form.education}}
+                        </div>
+                     </div>
+                     <div class="btn-box">
+                        <div class="btn">
+                            <input type="submit">
+                        </div>
+                     </div>
+
+                </form>
+
+            </div>
+        </div>
+    </section>
+</body>
+</html>

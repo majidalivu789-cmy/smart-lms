@@ -1,0 +1,49 @@
+{% include "header2.html" %}
+
+<section class="profile-header">
+    <div class="profile-nav">
+        <h3>News & Events</h3>
+        <ul class="menu">
+            <li><a href="/dashboard/"><i class="fa-solid fa-home "></i>Home</a></li>
+        </ul>
+
+    </div>
+</section>
+<main class="main-wrapper">
+        <header class="page-header">
+            <h1>Recent Updates</h1>
+        </header>
+
+<section class="updates-list">
+            
+        {% for u in updates %}
+            <article class="update-item">
+                <div class="update-top">
+                    <span class="date-text">{{u.updation_date}}</span>
+                    <span class="badge news"> {{u.updation_tag}} </span>
+                </div>
+                <h2 class="update-title"> {{u.updation_title}} </h2>
+                <p class="update-desc"> {{u.updation_desc}} </p>
+                <a href="{{u.button_link}}" class="action-btn">
+                   {{u.get_button_type_display}}
+                </a>
+            </article>
+        {% endfor %}
+            
+</section>
+</main>
+
+    <!-- ---- JavaScript For Tags Background Color ---- -->
+     <script>
+        window.addEventListener('load' , ()=>{
+            let badge = document.querySelectorAll('.badge');
+            let updateItem = document.querySelectorAll('.update-item');
+            let colors = ['#0652DD', '#2ed573', '#D980FA', '#0a3d62', '#b71540', '#182C61'];
+            for(let i = 0; i < badge.length; i++){
+                badge[i].style.backgroundColor = colors[i];
+                updateItem[i].style.borderLeft = '4px solid' + colors[i];
+            }
+        });
+     </script>
+</body>
+</html>
