@@ -70,76 +70,50 @@
     <p>What Ours Students Say About Us</p>
    <div class="testimonial-container">
     <div class="testimonial-wrapper">
+        {% for r in reviews %}
         <div class="testimonial">
-            <img src="/static/testimonial/woman3.jpg" alt="User">
-            <h3>Ayesha Raza</h3>
-            <p>Software Engineer</p>
+            {% if r.profile_image %}
+            <img src="/media/{{ r.profile_image }}" alt="{{ r.student_name }}">
+            {% else %}
+            <img src="/static/testimonial/boy1.jpg" alt="{{ r.student_name }}">
+            {% endif %}
+            <h3>{{ r.student_name }}</h3>
+            <p>{{ r.student_role }}</p>
             <div class="stars">
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
+                {% for star in "12345" %}
+                    {% if forloop.counter <= r.rating %}
+                    <span><i class="fa-solid fa-star"></i></span>
+                    {% else %}
+                    <span><i class="fa-regular fa-star"></i></span>
+                    {% endif %}
+                {% endfor %}
             </div>
-            <p>"Majid Ali  designed my website professionally and beautifuly, I am highly impressed with his skill and work!"</p>
+            <p>"{{ r.review_text }}"</p>
         </div>
+        {% empty %}
         <div class="testimonial">
             <img src="/static/testimonial/boy1.jpg" alt="User">
-            <h3>Ahmad Khan</h3>
-            <p>Businessman</p>
+            <h3>Student Review</h3>
+            <p>Coming Soon</p>
             <div class="stars">
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
+                <span><i class="fa-regular fa-star"></i></span>
+                <span><i class="fa-regular fa-star"></i></span>
+                <span><i class="fa-regular fa-star"></i></span>
+                <span><i class="fa-regular fa-star"></i></span>
+                <span><i class="fa-regular fa-star"></i></span>
             </div>
-            <p>"I got my e-commerce website developed by Majid Ali, and it turned out exactly as i wanted. He is truly a skilled developer</p>
+            <p>"No reviews added yet. You can add reviews from admin panel."</p>
         </div>
-        <div class="testimonial">
-            <img src="/static/testimonial/boy2.jpg" alt="User">
-            <h3>Rizwan Ahmed</h3>
-            <p>Web Developer</p>
-            <div class="stars">
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-            </div>
-            <p>"Working with Majid Ali was a fantastic experience. His work is of the highest quality!"</p>
-        </div>
-        <div class="testimonial">
-            <img src="/static/testimonial/boy3.jpg" alt="User">
-            <h3>Usman Javed</h3>
-            <p>Web Developer</p>
-            <div class="stars">
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-            </div>
-            <p>Excellent service! Majid Ali exceeded my expectations and made my website mobile-friendly as well.Highly recommend</p>
-        </div>
-        <div class="testimonial">
-            <img src="/static/testimonial/woman1.jpg" alt="User">
-            <h3>Sarah Malik</h3>
-            <p>Web Developer</p>
-            <div class="stars">
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-                <span><i class="fa-solid fa-star"></i></span>
-            </div>
-            <p>Amazing work! Majid Ali completed my website quickly and with top-notch quality. I will definitely use his services again."</p>
-        </div>
+        {% endfor %}
     </div>
 
     <div class="dots">
+        {% for r in reviews %}
+        <span class="dot {% if forloop.first %}active{% endif %}" onclick="currentSlide({{ forloop.counter0 }})"></span>
+        {% empty %}
         <span class="dot active" onclick="currentSlide(0)"></span>
-        <span class="dot" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-        <span class="dot" onclick="currentSlide(3)"></span>
-        <span class="dot" onclick="currentSlide(4)"></span>
+        {% endfor %}
     </div>
 </div>
 </section>
-{% include "footer.html" %}
+{% include "dynamic_footer.html" %}

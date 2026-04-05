@@ -1,0 +1,235 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_custom/admin_extra.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="lms-admin-overview">
+    <div class="lms-admin-hero">
+        <div>
+            <p class="lms-eyebrow">Smart Learn LMS</p>
+            <h1>Admin Overview</h1>
+            <p class="lms-subtext">Manage students, courses, enrollments, payments, content, and communication from the default Django admin panel.</p>
+        </div>
+    </div>
+
+    <div class="lms-stat-grid">
+        <div class="lms-stat-card">
+            <p>Total Students</p>
+            <h3>{{ admin_total_students }}</h3>
+        </div>
+        <div class="lms-stat-card">
+            <p>Total Courses</p>
+            <h3>{{ admin_total_courses }}</h3>
+        </div>
+        <div class="lms-stat-card">
+            <p>Total Enrollments</p>
+            <h3>{{ admin_total_enrollments }}</h3>
+        </div>
+        <div class="lms-stat-card">
+            <p>Total Earnings</p>
+            <h3>Rs. {{ admin_total_earnings }}</h3>
+        </div>
+    </div>
+
+    <div class="lms-mini-grid">
+        <div class="lms-mini-card">
+            <p>Instructors</p>
+            <strong>{{ admin_total_instructors }}</strong>
+        </div>
+        <div class="lms-mini-card">
+            <p>Reviews</p>
+            <strong>{{ admin_total_reviews }}</strong>
+        </div>
+        <div class="lms-mini-card">
+            <p>Messages</p>
+            <strong>{{ admin_total_messages }}</strong>
+        </div>
+    </div>
+
+    <div class="lms-chart-grid">
+        <div class="lms-panel">
+            <div class="lms-panel-head">
+                <h2>Student Growth</h2>
+                <span>Last 6 months</span>
+            </div>
+            <div class="lms-chart-box">
+                <canvas id="studentGrowthChart"></canvas>
+            </div>
+        </div>
+
+        <div class="lms-panel">
+            <div class="lms-panel-head">
+                <h2>Earnings</h2>
+                <span>Paid enrollments</span>
+            </div>
+            <div class="lms-chart-box">
+                <canvas id="earningsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="lms-panel">
+            <div class="lms-panel-head">
+                <h2>Course Popularity</h2>
+                <span>Top paid courses</span>
+            </div>
+            <div class="lms-chart-box">
+                <canvas id="coursePopularityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="lms-panel">
+        <div class="lms-panel-head">
+            <h2>{% translate 'Applications' %}</h2>
+            <span>{% translate 'Organized model access' %}</span>
+        </div>
+
+        <div id="content-main" class="lms-apps-wrap">
+            {% for app in app_list %}
+            <div class="lms-app-card">
+                <button type="button" class="lms-app-toggle" data-target="app-models-{{ forloop.counter }}">
+                    <span class="lms-app-title">{{ app.name }}</span>
+                    <span class="lms-app-arrow">+</span>
+                </button>
+
+                <div class="lms-app-models" id="app-models-{{ forloop.counter }}">
+                    {% for model in app.models %}
+                    <div class="lms-model-row">
+                        <div class="lms-model-name">
+                            {% if model.admin_url %}
+                                <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                            {% else %}
+                                {{ model.name }}
+                            {% endif %}
+                        </div>
+
+                        <div class="lms-model-actions">
+                            {% if model.add_url %}
+                                <a href="{{ model.add_url }}" class="lms-model-link">Add</a>
+                            {% endif %}
+                            {% if model.admin_url %}
+                                <a href="{{ model.admin_url }}" class="lms-model-link">View</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="lms-empty-text">No models available in this app.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="lms-empty-text">No applications available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{{ admin_student_growth_labels|json_script:"admin-student-growth-labels" }}
+{{ admin_student_growth_values|json_script:"admin-student-growth-values" }}
+{{ admin_earnings_labels|json_script:"admin-earnings-labels" }}
+{{ admin_earnings_values|json_script:"admin-earnings-values" }}
+{{ admin_popularity_labels|json_script:"admin-popularity-labels" }}
+{{ admin_popularity_values|json_script:"admin-popularity-values" }}
+
+<script>
+    // App-wise toggle for admin applications list.
+    const appToggleButtons = document.querySelectorAll('.lms-app-toggle');
+    appToggleButtons.forEach(function (button, index) {
+        const targetId = button.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+        const arrow = button.querySelector('.lms-app-arrow');
+
+        if (!targetElement || !arrow) {
+            return;
+        }
+
+        if (index === 0) {
+            targetElement.style.display = 'block';
+            button.classList.add('open');
+            arrow.textContent = '-';
+        } else {
+            targetElement.style.display = 'none';
+            button.classList.remove('open');
+            arrow.textContent = '+';
+        }
+
+        button.addEventListener('click', function () {
+            const isOpen = targetElement.style.display === 'block';
+            targetElement.style.display = isOpen ? 'none' : 'block';
+            button.classList.toggle('open', !isOpen);
+            arrow.textContent = isOpen ? '+' : '-';
+        });
+    });
+
+    // Load charts only if Chart.js is available, so toggles still work even if charts fail.
+    if (window.Chart) {
+        const studentGrowthLabels = JSON.parse(JSON.parse(document.getElementById('admin-student-growth-labels').textContent));
+        const studentGrowthValues = JSON.parse(JSON.parse(document.getElementById('admin-student-growth-values').textContent));
+        const earningsLabels = JSON.parse(JSON.parse(document.getElementById('admin-earnings-labels').textContent));
+        const earningsValues = JSON.parse(JSON.parse(document.getElementById('admin-earnings-values').textContent));
+        const popularityLabels = JSON.parse(JSON.parse(document.getElementById('admin-popularity-labels').textContent));
+        const popularityValues = JSON.parse(JSON.parse(document.getElementById('admin-popularity-values').textContent));
+
+        new Chart(document.getElementById('studentGrowthChart'), {
+            type: 'line',
+            data: {
+                labels: studentGrowthLabels,
+                datasets: [{
+                    label: 'Students',
+                    data: studentGrowthValues,
+                    borderColor: '#4ea8ff',
+                    backgroundColor: 'rgba(78, 168, 255, 0.12)',
+                    fill: true,
+                    borderWidth: 3,
+                    tension: 0.35
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        new Chart(document.getElementById('earningsChart'), {
+            type: 'bar',
+            data: {
+                labels: earningsLabels,
+                datasets: [{
+                    label: 'Earnings',
+                    data: earningsValues,
+                    backgroundColor: ['#f59e0b', '#fbbf24', '#fcd34d', '#fde68a', '#fef3c7', '#fffbeb'],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        new Chart(document.getElementById('coursePopularityChart'), {
+            type: 'pie',
+            data: {
+                labels: popularityLabels,
+                datasets: [{
+                    data: popularityValues,
+                    backgroundColor: ['#2563eb', '#1d4ed8', '#0f766e', '#0f172a', '#f59e0b']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+</script>
+{% endblock %}

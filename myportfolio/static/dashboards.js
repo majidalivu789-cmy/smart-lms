@@ -9,51 +9,69 @@ const body = document.querySelector("body"),
             switching= body.querySelector('.switch'),
             home = body.querySelector('.home');
 
-            modeSwitch.addEventListener('click', ()=>{
-                body.classList.toggle('dark');
-                if(body.classList.contains('dark')){
-                    modeText.innerText = "Light Mode";
-                }
-                else{
-                     modeText.innerText = "Dark Mode";
-                }
-            });
+            if (modeSwitch) {
+                modeSwitch.addEventListener('click', ()=>{
+                    body.classList.toggle('dark');
+                    if(modeText){
+                        if(body.classList.contains('dark')){
+                            modeText.innerText = "Light Mode";
+                        }
+                        else{
+                            modeText.innerText = "Dark Mode";
+                        }
+                    }
+                });
 
-            modeSwitch.addEventListener('click', ()=>{
-                sidebar.classList.toggle('dark-sidebar');
-            });
+                modeSwitch.addEventListener('click', ()=>{
+                    if(sidebar){
+                        sidebar.classList.toggle('dark-sidebar');
+                    }
+                });
 
-            modeSwitch.addEventListener('click', ()=>{
-                mode.classList.toggle('mode-back');
-            });
+                modeSwitch.addEventListener('click', ()=>{
+                    if(mode){
+                        mode.classList.toggle('mode-back');
+                    }
+                });
 
-            modeSwitch.addEventListener('click', ()=>{
-                switching.classList.toggle('switching');
-            });
+                modeSwitch.addEventListener('click', ()=>{
+                    if(switching){
+                        switching.classList.toggle('switching');
+                    }
+                });
 
-            modeSwitch.addEventListener('click', ()=>{
-                searchBtn.classList.toggle('mode-back');
-            });
+                modeSwitch.addEventListener('click', ()=>{
+                    if(toggles){
+                        toggles.classList.toggle('toggles');
+                    }
+                });
 
-            modeSwitch.addEventListener('click', ()=>{
-                toggles.classList.toggle('toggles');
-            });
-            modeSwitch.addEventListener('click', ()=>{
-                home.classList.toggle('homes');
-            });
-          
-            toggles.addEventListener('click', ()=>{
-                sidebar.classList.toggle('close');
-            });
+                modeSwitch.addEventListener('click', ()=>{
+                    if(home){
+                        home.classList.toggle('homes');
+                    }
+                });
+            }
+
+            if (toggles && sidebar) {
+                toggles.addEventListener('click', ()=>{
+                    sidebar.classList.toggle('close');
+                });
+            }
 
             //Profile Image change
             
-    document.getElementById("imgInput").addEventListener("change", function(){
-        const file = this.files[0];
-        if (file){
-        document.getElementById("profilePreview").src = URL.createObjectURL(file);
-         }
-    });
+    const imgInput = document.getElementById("imgInput");
+    const profilePreview = document.getElementById("profilePreview");
+
+    if (imgInput && profilePreview) {
+        imgInput.addEventListener("change", function(){
+            const file = this.files[0];
+            if (file){
+                profilePreview.src = URL.createObjectURL(file);
+            }
+        });
+    }
 
 // =========================Script For Student Form=================
 function loadDistricts(){

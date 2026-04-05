@@ -3,7 +3,9 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 # -----login page authentication-----
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from Dashboard_Page.models import Quiz, Question, Option
@@ -21,6 +23,7 @@ from Home_Page.models import Instructor
 from Home_Page.models import Feature
 from About_Page.models import AboutSml
 from About_Page.models import AboutFeature
+from About_Page.models import StudentReview
 from Dashboard_Page.models import DashboardCourse
 from Dashboard_Page.models import ProfileImage
 from Dashboard_Page.forms import StudentForm
@@ -33,6 +36,7 @@ from Contact_Page.models import ContactMessage,MapSide
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator
+from datetime import timedelta
 
 #Home Page
 def index(request):
@@ -55,10 +59,12 @@ def about(request):
     Title = Logo.objects.all()
     about = AboutSml.objects.all()
     features = AboutFeature.objects.all()
+    reviews = StudentReview.objects.filter(is_active=True).order_by('display_order', '-created_at')
     data ={
         'Title':Title,
         'about':about,
         'features':features,
+        'reviews': reviews,
     }
     return render(request,'about.html',data)
 
@@ -118,41 +124,49 @@ def contacts(request):
 @csrf_protect
 def signup_view(request):
     fname = ''
-    lname = ''
     email = ''
-    password = ''
     if request.method == 'POST':
-        full_name = request.POST.get('fname')
-        email = request.POST.get('email2')
+        full_name = (request.POST.get('fname') or '').strip()
+        email = (request.POST.get('email2') or '').strip().lower()
         password = request.POST.get('password2')
+        confirm_password = request.POST.get('confirm_password')
+        fname = full_name or ''
 
-        if User.objects.filter(username=email).exists():
+        if not full_name:
+            messages.error(request, "Full name is required.")
+        elif not email:
+            messages.error(request, "Email is required.")
+        elif User.objects.filter(username=email).exists():
             messages.error(request, "Email already registered!")
-        elif not email.endswith('@gmail.com'):
-            messages.error(request,'@gmail.com is missing')
-        elif len(password)<8:
-            messages.error(request,'password must be at least 8 characters')
+        elif not password:
+            messages.error(request, "Password is required.")
+        elif password != confirm_password:
+            messages.error(request, "Passwords do not match.")
         else:
-            user = User.objects.create_user(
-                username=email,
-                email=email,
-                first_name=full_name,
-                password=password
-            )
-            user.save()
-            messages.success(request, "Signup successful! Please login.")
-            return redirect('login')
+            try:
+                validate_password(password)
+            except ValidationError as err:
+                messages.error(request, " ".join(err.messages))
+            else:
+                user = User.objects.create_user(
+                    username=email.lower(),
+                    email=email.lower(),
+                    first_name=full_name.strip(),
+                    password=password
+                )
+                user.save()
+                messages.success(request, "Signup successful! Please login.")
+                return redirect('login')
 
-    return render(request, 'signup.html',{'fname':fname,'lname':lname,'email':email,'password':password})
+    return render(request, 'signUp.html', {'fname': fname, 'email': email})
     
 # Login View
 @never_cache
 @csrf_protect
 def login_view(request):
-    email =''
-    password = ''
+    email = ''
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = (request.POST.get('email') or '').strip().lower()
         password = request.POST.get('password')
         user = authenticate(request, username=email, password=password)
 
@@ -161,11 +175,20 @@ def login_view(request):
             messages.success(request, "Login successful!")
             return redirect('/dashboard/')  # redirect to welcome or home page
         else:
-            messages.error(request,'Invalid Email or Password!')
-    response = render(request, 'login.html', {'email': email, 'password': password})
+            messages.error(request, 'Invalid email or password!')
+    response = render(request, 'login.html', {'email': email})
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
     # return render(request, 'login.html',{'email':email,'password':password})
+
+
+@never_cache
+@csrf_protect
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, "You have been logged out.")
+    return redirect('login')
 # Payment information
 from django.contrib.auth.decorators import login_required
 def enrollnow(request):
@@ -447,8 +470,8 @@ def course_detail (request, course_id):
 from django.http import JsonResponse
 from Dashboard_Page.models import VideoProgress, CourseLecture
 
-from datetime import timedelta # Ye line top par imports mein add karein
 from Dashboard_Page.models import DailyLearning
+
 
 @login_required
 def progress(request):

@@ -19,26 +19,32 @@ function scrollToTop() {
 let index = 0;
 const wrapper = document.querySelector('.testimonial-wrapper');
 const dots = document.querySelectorAll('.dot');
+const totalSlides = dots.length;
 
 function showSlide(n) {
+    if (!wrapper || totalSlides === 0) return;
     index = n;
     wrapper.style.transform = `translateX(-${index * 100}%)`;
     dots.forEach(dot => dot.classList.remove('active'));
-    dots[n].classList.add('active');
+    if (dots[n]) dots[n].classList.add('active');
 }
 
 function nextSlide() {
+    if (!wrapper || totalSlides === 0) return;
     index++;
-    if (index > 4) { index = 0; }
+    if (index > (totalSlides - 1)) { index = 0; }
     showSlide(index);
 }
 
 function currentSlide(n) {
+    if (!wrapper || totalSlides === 0) return;
     index = n;
     showSlide(index);
 }
 
-setInterval(nextSlide, 3000); // Move every 3 seconds
+if (wrapper && totalSlides > 1) {
+    setInterval(nextSlide, 3000); // Move every 3 seconds
+}
 
 // Maps picture
 function initMap() {

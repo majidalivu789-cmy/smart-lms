@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 
 INSTALLED_APPS = [
+    'jazzmin',  # Professional theme for the default Django admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,6 +73,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'Home_Page.context_processors.footer_data',
+                'myportfolio.admin_context.admin_dashboard_stats',
             ],
         },
     },
@@ -152,5 +155,118 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'majidalivu486@gmail.com'
 EMAIL_HOST_PASSWORD = 'vace ewwy mnoa wiok'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# ---------------- Django Admin Theme ----------------
+# These settings customize the existing Django admin panel with Jazzmin.
+JAZZMIN_SETTINGS = {
+    "site_title": "Smart Learn Admin",
+    "site_header": "Smart Learn LMS",
+    "site_brand": "Smart Learn LMS",
+    "welcome_sign": "Welcome to the Smart Learn administration panel",
+    "copyright": "Smart Learn LMS",
+    "site_logo_classes": "img-circle",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "related_modal_active": True,
+    "show_ui_builder": False,
+    "custom_css": "admin_custom/admin_extra.css",
+    "order_with_respect_to": [
+        "auth",
+        "Dashboard_Page",
+        "Mycourses",
+        "Contact_Page",
+        "About_Page",
+        "Home_Page",
+    ],
+    "custom_links": {
+        "Dashboard_Page": [{
+            "name": "Enrollments",
+            "url": "admin:Dashboard_Page_enrollment_changelist",
+            "icon": "fas fa-file-signature",
+            "permissions": ["Dashboard_Page.view_enrollment"],
+        }, {
+            "name": "Payments",
+            "url": "admin:Dashboard_Page_enrollment_changelist",
+            "icon": "fas fa-wallet",
+            "permissions": ["Dashboard_Page.view_enrollment"],
+        }],
+        "Contact_Page": [{
+            "name": "Inbox",
+            "url": "admin:Contact_Page_contactmessage_changelist",
+            "icon": "fas fa-inbox",
+            "permissions": ["Contact_Page.view_contactmessage"],
+        }],
+    },
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"app": "auth"},
+        {"app": "Dashboard_Page"},
+        {"app": "Contact_Page"},
+        {"app": "Mycourses"},
+        {"app": "About_Page"},
+        {"app": "Home_Page"},
+    ],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user-graduate",
+        "auth.Group": "fas fa-user-shield",
+        "Dashboard_Page.DashboardCourse": "fas fa-book-open",
+        "Dashboard_Page.CourseWeek": "fas fa-calendar-week",
+        "Dashboard_Page.CourseLecture": "fas fa-play-circle",
+        "Dashboard_Page.Enrollment": "fas fa-file-signature",
+        "Dashboard_Page.Student": "fas fa-id-card",
+        "Dashboard_Page.ProfileImage": "fas fa-image",
+        "Dashboard_Page.Updates": "fas fa-bullhorn",
+        "Dashboard_Page.ImportantLinks": "fas fa-link",
+        "Dashboard_Page.VideoProgress": "fas fa-chart-line",
+        "Dashboard_Page.Quiz": "fas fa-circle-question",
+        "Dashboard_Page.Question": "fas fa-list-check",
+        "Dashboard_Page.Option": "fas fa-square-check",
+        "Dashboard_Page.QuizResult": "fas fa-trophy",
+        "Dashboard_Page.DailyLearning": "fas fa-clock",
+        "Mycourses.myCourses": "fas fa-graduation-cap",
+        "Home_Page.Logo": "fas fa-signature",
+        "Home_Page.FounderMessage": "fas fa-comment-dots",
+        "Home_Page.Feature": "fas fa-star",
+        "Home_Page.Instructor": "fas fa-chalkboard-teacher",
+        "Home_Page.Top_Courses": "fas fa-fire",
+        "Home_Page.FooterSettings": "fas fa-sliders",
+        "Home_Page.FooterLink": "fas fa-paperclip",
+        "Home_Page.FooterContact": "fas fa-phone",
+        "Home_Page.FooterSocialLink": "fas fa-share-nodes",
+        "About_Page.AboutSml": "fas fa-circle-info",
+        "About_Page.AboutFeature": "fas fa-gem",
+        "About_Page.StudentReview": "fas fa-star-half-stroke",
+        "Contact_Page.ContactMessage": "fas fa-envelope-open-text",
+        "Contact_Page.MapSide": "fas fa-map-location-dot",
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
+    "navbar": "navbar-dark",
+    "navbar_small_text": False,
+    "sidebar": "sidebar-dark-primary",
+    "accent": "accent-info",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "button_classes": {
+        "primary": "btn btn-info",
+        "secondary": "btn btn-outline-secondary",
+        "info": "btn btn-outline-info",
+        "warning": "btn btn-warning",
+        "danger": "btn btn-danger",
+        "success": "btn btn-success",
+    },
+}
 
 

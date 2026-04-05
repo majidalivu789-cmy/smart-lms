@@ -8,14 +8,21 @@
 body{
     min-height: 100vh;
 }
+:root{
+    --nav-grad-start: #0f4c81;
+    --nav-grad-end: #1f8a70;
+    --nav-soft-bg: rgba(15, 76, 129, 0.1);
+}
 #header{
     width: 100%;
     display: flex;
     justify-content:space-between;
     align-items: center;
     padding: 10px 5%;
-    background-color: #E6E5E3;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
+    background: rgba(230, 229, 227, 0.92);
+    border-bottom: 1px solid rgba(15, 76, 129, 0.16);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(8px);
     position: sticky;
     top: 0;
     left: 0;
@@ -39,6 +46,7 @@ body{
     color: #262262;
     font-size: 24px;
     margin-left: 8px;
+    letter-spacing: 0.4px;
     
 }
 
@@ -46,30 +54,47 @@ body{
 #header .navbar{
     display: flex;
     list-style: none;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(15, 76, 129, 0.14);
 }
 #header .navbar li{
-    padding: 0px 15px;
+    padding: 0px;
     position: relative;
 }
 #header .navbar li a{
     text-decoration: none;
     font-size: 16px;
-    font-weight: 500;
-    color: #333;
+    font-weight: 600;
+    color: #243447;
     position: relative;
-    transition: all 0.3s ease-in; 
+    transition: all 0.25s ease-in;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 999px;
 }
 /* Login Button on Navbar */
 #header .login{
-    padding: 7px 12px;
-    border-radius: 6px;
-    border: 1px solid #008cff;
+    position: relative;
+    border-radius: 999px;
+    border: 1px solid transparent;
     cursor: pointer;
-    color: #008cff !important;
+    color: #0f4c81 !important;
+    background:
+        linear-gradient(#ffffff, #ffffff) padding-box,
+        linear-gradient(135deg, var(--nav-grad-start), var(--nav-grad-end)) border-box;
+    box-shadow: 0 5px 14px rgba(15, 76, 129, 0.16);
 }
 #header .login:hover{
-     color: #008cff !important;
-     background: #a6d3f8 !important;
+     color: #fff !important;
+     background: linear-gradient(135deg, var(--nav-grad-start), var(--nav-grad-end)) !important;
+     box-shadow: 0 10px 20px rgba(15, 76, 129, 0.28);
+     transform: translateY(-1px);
 
 
 }
@@ -77,18 +102,38 @@ body{
 /* Join Now Button */
 
 .join-btn {
-    background-image: linear-gradient(to bottom right, #008cff, #e100ff);
+    position: relative;
+    overflow: hidden;
+    background-image: linear-gradient(to bottom right, var(--nav-grad-start), var(--nav-grad-end));
     text-decoration: none;
-    padding: 9px 12px;
-    border-radius: 6px;
+    border-radius: 999px;
     cursor: pointer;
     color: #fff !important;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    box-shadow: 0 8px 18px rgba(15, 76, 129, 0.28);
 }
 #header .join-btn:hover{
      color: #fff !important;
-     background: linear-gradient(to bottom right, #008cff, #e100ff) !important;
-     box-shadow: 0 4px 10px rgba(124, 58, 237, 0.5) !important;
+     background: linear-gradient(to bottom right, #0e3f6b, #1d7f68) !important;
+     box-shadow: 0 12px 24px rgba(15, 76, 129, 0.34) !important;
+     transform: translateY(-1px);
     
+}
+
+.join-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 65%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.34), transparent);
+    transition: left 0.45s ease;
+}
+
+.join-btn:hover::before {
+    left: 130%;
 }
 
 /* After element (underline) ko remove karne ke liye */
@@ -99,21 +144,20 @@ body{
 
 #header .navbar li a.active,
 #header .navbar li a:hover{
-    /* color: #F7931D; */
-    background-image: linear-gradient(to bottom right, #008cff, #e100ff);
-    background-clip: text;
-    color: transparent;
+    background: linear-gradient(135deg, var(--nav-soft-bg), rgba(31, 138, 112, 0.1));
+    color: #0f4c81;
+    transform: translateY(-1px);
 }
+
+#header .navbar li a.active{
+    color: #fff !important;
+    background: linear-gradient(135deg, var(--nav-grad-start), var(--nav-grad-end));
+    box-shadow: 0 8px 16px rgba(15, 76, 129, 0.3);
+}
+
 #header .navbar li a.active::after,
 #header .navbar li a:hover::after{
-    content: "";
-    width: 70%;
-    height: 2px;
-    border-radius: 40px;
-    background-image: linear-gradient(to bottom right, #008cff, #e100ff);
-    position: absolute;
-    bottom: -4px;
-    left: 0px;
+    display: none;
 }
 #mobile{
    display:none;
@@ -202,24 +246,21 @@ body{
     position: relative;
     z-index: 2;
 }
-#hero .hero-des .btn button a{
+#hero .hero-des .btn .hero-cta{
     text-decoration: none;
     color: #fff;
     font-size: 16px;
-}
-#hero .hero-des .btn button{
     padding: 1em 4em;
     background: #2f3640;
     border: none;
-    color: #f0f0f0;
     border-radius: 1000px;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     position: relative;
 }
-#hero .hero-des .btn button::after{
+#hero .hero-des .btn .hero-cta::after{
     content: '';
     position: absolute;
     height: 107%;
@@ -228,7 +269,7 @@ body{
     background-image: linear-gradient(to bottom right, #008cff, #e100ff);
     z-index: -1;
 }
-#hero .hero-des .btn button:hover{
+#hero .hero-des .btn .hero-cta:hover{
     z-index: 0;
     box-shadow: 10px 0px 100px #008cff, -10px 0px 100px #e100ff;
 }
@@ -820,7 +861,7 @@ body{
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-image: linear-gradient(to bottom right, #008cff, #e100ff);
+    background-image: linear-gradient(135deg, var(--nav-grad-start), var(--nav-grad-end));
     color: white;
     border: none;
     padding: 10px 15px;
@@ -832,7 +873,7 @@ body{
 }
 
 #topBtn :hover {
-    box-shadow: 0px 0px 30px #008cff, 0px 0px 30px #e100ff;
+    box-shadow: 0 12px 24px rgba(15, 76, 129, 0.34);
 }
 /* About Page */
 
@@ -1530,19 +1571,27 @@ iframe{
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
-        padding: 40px 0px 0px 20px;
+        padding: 50px 14px 20px;
         position: fixed;
         top: 0;
         right: -300px;
-        width: 145px;
-        height:60vh;
-        background-color: #E6E5E3;
-        box-shadow: -2px 0px 4px rgba(0, 0, 0, 0.2);
-        border-radius: 40px 0px 0px 40px;
+        width: 220px;
+        height:100vh;
+        background: rgba(230, 229, 227, 0.98);
+        box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+        border-radius: 22px 0px 0px 22px;
+        border: none;
      }
      .navbar li{
-        margin-top: 20px;
+        margin-top: 12px;
+        width: 100%;
         
+     }
+     .navbar li a{
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 12px;
+        padding: 10px 12px;
      }
      
      
@@ -1563,8 +1612,12 @@ iframe{
         cursor: pointer;
      }
      #mobile i{
-        color: #222;
+        color: #1f2937;
         font-size: 24px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.7);
+        border: 1px solid rgba(0, 140, 255, 0.2);
      }
      
 #hero{
@@ -1582,7 +1635,7 @@ iframe{
 #hero .animated-text{
     min-width: 440px;
 }
-#hero .hero-des .btn button{
+#hero .hero-des .btn .hero-cta{
     background-image: linear-gradient(to bottom right, #008cff, #e100ff);
     box-shadow: 10px 0px 100px #008cff, -10px 0px 100px #e100ff;
 }
@@ -1785,9 +1838,218 @@ iframe{
 .input-box .input-item input{
     margin-bottom: 20px;
 }
-.wraper .forgot-box{
+ .wraper .forgot-box{
     display: flex;
     flex-direction: column;
 }
  }
+
+/* ---- Additional Responsive Refinements (No Design Change) ---- */
+img, video, iframe {
+    max-width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .contact-container {
+        padding: 30px 20px;
+        gap: 24px;
+    }
+
+    .message-side .input-box input {
+        width: 100%;
+    }
+
+    .about-mission {
+        padding: 30px 20px;
+        gap: 16px;
+    }
+
+    .about-mission .vision,
+    .about-mission .mission {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 799px) {
+    html, body {
+        overflow-x: hidden;
+    }
+
+    #hero {
+        height: auto;
+        min-height: 100vh;
+        padding: 100px 16px 60px;
+    }
+
+    .hero-des {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    #hero .animated-text {
+        min-width: 0;
+        width: 100%;
+        font-size: clamp(22px, 7vw, 32px);
+    }
+
+    #hero .hero-des .name h2 {
+        white-space: normal;
+        line-height: 1.35;
+    }
+
+    .frelan-baner {
+        height: auto;
+        min-height: 220px;
+        text-align: center;
+        padding: 24px 16px;
+    }
+
+    .frelan-baner h2 {
+        line-height: 1.4;
+    }
+
+    .founder-msg {
+        padding: 16px;
+    }
+
+    .founder-msg .msg {
+        margin-left: 0;
+        padding: 16px 8px;
+        height: auto;
+    }
+
+    .testimonial-container {
+        padding: 20px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    #header {
+        padding: 10px 12px;
+    }
+
+    #header .logo h2 {
+        font-size: 18px;
+    }
+
+    #projects {
+        padding: 16px 8px;
+    }
+
+    .project-card,
+    .courseElement {
+        width: min(100%, 320px);
+    }
+
+    .key-feature {
+        gap: 12px;
+    }
+
+    .key-feature .about-feature {
+        width: 100%;
+    }
+
+    .message-side {
+        padding: 18px 14px;
+    }
+
+    .newsletter-form input,
+    .newsletter-form button {
+        font-size: 13px;
+    }
+}
+
+/* ---- Unified Button Theme (Navbar Match) ---- */
+:is(
+    .views-courses button,
+    .frelan-baner .btn button,
+    .about-slms .content-side .btn button,
+    .white button,
+    .enroll-btn button,
+    .message-side .btn button,
+    .newsletter-form button
+) {
+    background: linear-gradient(135deg, var(--nav-grad-start), var(--nav-grad-end)) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 999px !important;
+    box-shadow: 0 8px 18px rgba(15, 76, 129, 0.28);
+    transition: all 0.25s ease !important;
+}
+
+:is(
+    .views-courses button,
+    .frelan-baner .btn button,
+    .about-slms .content-side .btn button,
+    .white button,
+    .enroll-btn button,
+    .message-side .btn button,
+    .newsletter-form button
+):hover {
+    background: linear-gradient(135deg, #0e3f6b, #1d7f68) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(15, 76, 129, 0.34) !important;
+}
+
+/* ---- Navbar Auth Buttons Unique Style ---- */
+#header .login {
+    background: #ffffff !important;
+    color: #0f4c81 !important;
+    border: 1.5px solid rgba(15, 76, 129, 0.35) !important;
+    box-shadow: 0 6px 14px rgba(15, 76, 129, 0.14) !important;
+    letter-spacing: 0.2px;
+    padding: 8px 16px !important;
+    font-weight: 700 !important;
+}
+
+#header .login:hover {
+    background: #f0f8ff !important;
+    color: #0b3b63 !important;
+    border-color: rgba(15, 76, 129, 0.55) !important;
+    box-shadow: 0 10px 20px rgba(15, 76, 129, 0.2) !important;
+}
+
+#header .join-btn {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f4c81, #1f8a70) !important;
+    color: #f8fbff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 10px 22px rgba(15, 76, 129, 0.3) !important;
+    padding: 8px 16px !important;
+    font-weight: 700 !important;
+}
+
+/* Hero Join Now button: no gradient, no hover color change */
+#hero .hero-des .btn .hero-cta {
+    background: #0f4c81 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+#hero .hero-des .btn .hero-cta::after {
+    display: none !important;
+}
+
+#hero .hero-des .btn .hero-cta:hover {
+    background: #0f4c81 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+#header .join-btn::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 999px;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), transparent 35%, transparent 65%, rgba(255, 255, 255, 0.22));
+    pointer-events: none;
+}
+
+#header .join-btn:hover {
+    background: linear-gradient(135deg, #0c3f6c, #176f5b) !important;
+    box-shadow: 0 14px 28px rgba(15, 76, 129, 0.36) !important;
+}
 

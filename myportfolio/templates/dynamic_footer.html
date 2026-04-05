@@ -1,0 +1,83 @@
+<section id="footer">
+    <button onclick="scrollToTop()" id="topBtn">&#8593;</button>
+    <footer class="footer">
+    <div class="footer-container">
+
+      <div class="footer-box">
+        <h3>{{ footer_settings.site_name|default:"Smart LMS" }}</h3>
+        <p>
+          {{ footer_settings.about_text|default:"Smart Learn LMS is an online learning platform designed to help students gain practical skills through structured courses and expert guidance." }}
+        </p>
+      </div>
+
+      <div class="footer-box">
+        <h3>Quick Links</h3>
+        <ul>
+          {% for item in footer_quick_links %}
+          <li><a href="{{ item.url }}"><i class="fas fa-angle-right"></i>{{ item.label }}</a></li>
+          {% empty %}
+          <li><a href="/"><i class="fas fa-angle-right"></i>Home</a></li>
+          <li><a href="/courses/"><i class="fas fa-angle-right"></i>Courses</a></li>
+          <li><a href="/dashboard/"><i class="fas fa-angle-right"></i>Dashboard</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="footer-box">
+        <h3>Courses</h3>
+        <ul>
+          {% for item in footer_course_links %}
+          <li><a href="{{ item.url }}"><i class="fas fa-angle-right"></i>{{ item.label }}</a></li>
+          {% empty %}
+          <li><a href="/courses/"><i class="fas fa-angle-right"></i>Web Development</a></li>
+          <li><a href="/courses/"><i class="fas fa-angle-right"></i>Python & Django</a></li>
+          <li><a href="/courses/"><i class="fas fa-angle-right"></i>AI Basics</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="footer-box">
+        <h3>Contact Us</h3>
+        <ul>
+          {% for item in footer_contacts %}
+          <li><a href="#"><i class="{{ item.icon_class }}"></i>{{ item.value }}</a></li>
+          {% empty %}
+          <li><a href="#"><i class="fas fa-angle-right"></i>info@example.com</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i>+92 300 0000000</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i>Pakistan</a></li>
+          {% endfor %}
+        </ul>
+        <div class="social-media">
+          {% for item in footer_social_links %}
+          <a href="{{ item.url }}"><i class="{{ item.icon_class }}"></i></a>
+          {% empty %}
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="footer-box">
+        <h3>News letter</h3>
+        <p>{{ footer_settings.newsletter_text|default:"Subscribe to get update about new courses." }}</p>
+        <form action="" class="newsletter-form">
+          <input type="email" placeholder="{{ footer_settings.newsletter_placeholder|default:'Enter your email' }}" required>
+          <button type="submit">{{ footer_settings.newsletter_button_text|default:"Subscribe" }}</button>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>{{ footer_settings.copyright_text|default:"© 2026 Smart Learn LMS | Developed by Majid Ali" }}</p>
+      <p class="fyp">
+        {{ footer_settings.project_note|default:"This LMS is developed as a Final Year Project focusing on Web Development and Database Management." }}
+      </p>
+    </div>
+    </footer>
+</section>
+
+<script src="/static/jsfile.js"></script>
+</body>
+</html>

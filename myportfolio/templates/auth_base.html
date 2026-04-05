@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Learn Authentication{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/static/background/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/auth.css">
+</head>
+<body>
+    <main class="auth-shell">
+        <section class="auth-layout">
+            <section class="auth-card">
+                <div class="auth-head">
+                    <h2>{% block heading %}Welcome{% endblock %}</h2>
+                    <p>{% block subtitle %}Access your account{% endblock %}</p>
+                </div>
+
+                {% if messages %}
+                <div class="auth-messages">
+                    {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% block auth_content %}{% endblock %}
+            </section>
+        </section>
+    </main>
+</body>
+</html>
