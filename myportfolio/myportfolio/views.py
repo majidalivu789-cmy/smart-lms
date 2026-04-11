@@ -273,7 +273,6 @@ from Dashboard_Page.models import VideoProgress, Enrollment, CourseLecture
 
 from Dashboard_Page.models import QuizResult
 # --- Is block ko copy karein aur apne views.py mein replace karein ---
-from django.db.models import Q  # <--- NEW LINE (Add at top if not there)
 from django.utils import timezone
 
 @login_required
@@ -281,23 +280,25 @@ def quiz(request):
     profile = ProfileImage.objects.first()
     now = timezone.now()
     
-    # 1. Pehle student ke enrolled (paid) courses ki list nikalo
+    # 1. Student ke tamam enrolled courses ki list nikalo
     enrolled_course_ids = Enrollment.objects.filter(
-        user=request.user, 
-        is_paid=True
-    ).values_list('course_id', flat=True)
+        user=request.user
+    ).values_list('course_id', flat=True).distinct()
     
-    # 2. Sirf un courses ke quizzes uthao jo active hain
+    # 2. Sirf unhi enrolled courses ke quizzes uthao (expired bhi show hon, but disabled)
     quizzes = Quiz.objects.filter(
-        course_id__in=enrolled_course_ids  # <--- FILTER ADDED
-    ).filter(
-        Q(expiry_date__gt=now) | Q(expiry_date__isnull=True)
+        course_id__in=enrolled_course_ids
+    ).select_related('course').order_by('course_id', 'id')
+
+    done_quiz_ids = set(
+        QuizResult.objects.filter(user=request.user).values_list('quiz_id', flat=True)
     )
-    
+
     for q in quizzes:
-        q.already_done = QuizResult.objects.filter(user=request.user, quiz=q).exists()
-        q.not_started = q.start_date > now if q.start_date else False
-        q.is_disabled = q.already_done or q.not_started
+        q.already_done = q.id in done_quiz_ids
+        q.not_started = bool(q.start_date and q.start_date > now)
+        q.is_expired = bool(q.expiry_date and q.expiry_date <= now)
+        q.is_disabled = q.already_done or q.not_started or q.is_expired
 
     return render(request, 'quiz.html', {'profile': profile, 'quizzes': quizzes})
 

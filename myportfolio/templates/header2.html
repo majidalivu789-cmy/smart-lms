@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Learn</title>
     <link rel="icon" type="png" href="/static/background/logo.png"><!--link icon-->
-    <link rel="stylesheet" href="/static/style_dashboard.css">
+    <link rel="stylesheet" href="/static/style_dashboard.css?v=20260405-3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    
@@ -82,9 +82,14 @@
                 </div>
             </div>
         </nav>
+       
+        <div class="sidebar-overlay" onclick="toggleMobileSidebar(true)"></div>
 
 
         <div  class="home">
+            <button class="mobile-sidebar-toggle" type="button" aria-label="Toggle sidebar" onclick="toggleMobileSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
             
             <div class="logo">
             <a href=""><img src="/static/background/logo.png" alt=""></a>
@@ -105,4 +110,45 @@
 </section>
 
 <!-- --------JavaScript------  -->
-<script src="/static/dashboards.js"></script>
+<script src="/static/dashboards.js?v=20260405-3"></script>
+<script>
+function toggleMobileSidebar(forceClose) {
+    const body = document.body;
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+
+    if (!sidebar || !overlay) return;
+
+    if (window.innerWidth > 799) {
+        overlay.classList.remove('active');
+        body.classList.remove('sidebar-open-mobile');
+        return;
+    }
+
+    if (forceClose === true) {
+        sidebar.classList.add('close');
+    } else {
+        sidebar.classList.toggle('close');
+    }
+
+    const isOpen = !sidebar.classList.contains('close');
+    overlay.classList.toggle('active', isOpen);
+    body.classList.toggle('sidebar-open-mobile', isOpen);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.querySelector('.sidebar');
+    const mobileBtn = document.querySelector('.mobile-sidebar-toggle');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (mobileBtn) mobileBtn.dataset.externalToggle = 'true';
+    if (overlay) overlay.dataset.externalToggle = 'true';
+    if (window.innerWidth <= 799 && sidebar) sidebar.classList.add('close');
+    toggleMobileSidebar(true);
+});
+
+window.addEventListener('resize', function () {
+    if (window.innerWidth > 799) {
+        toggleMobileSidebar(true);
+    }
+});
+</script>

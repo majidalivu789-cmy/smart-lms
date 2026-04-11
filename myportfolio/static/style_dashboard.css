@@ -185,6 +185,24 @@ header .image-text .header-text{
     justify-content: space-between;
     align-items: center;
 }
+
+.mobile-sidebar-toggle{
+    display: none;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 8px;
+    background: #27AE60;
+    color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.sidebar-overlay{
+    display: none;
+}
 .home .logo img{
     height: 40px;
     border-radius: 50%;
@@ -871,11 +889,11 @@ form h4{
     padding-left: 170px;
     font-size: 16px;
 }
-.topic-header button{
+.topic-header .next-btn{
+    padding: 10px 12px;
     text-align: center;
     background: none;
-    color: orange;
-    border: none;
+    border: none !important;
     outline: none;
     font-size: 18px;
     font-weight: 600;
@@ -1486,7 +1504,7 @@ form h4{
     padding: 0px;
     font-size: 11px;
 }
-.topic-header button{
+.topic-header .next-btn{
     font-size: 14px;
 }
 .topic-container > :nth-child(1){
@@ -1815,9 +1833,13 @@ form h4{
 .course-detail-wrapper{
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 60vh;
-    padding: 0 15px;
+    align-items: flex-start;
+    min-height: auto;
+    padding: 6px 15px 24px;
+}
+
+.course-detail-head{
+    padding-bottom: 8px;
 }
 
 .course-card{
@@ -2218,9 +2240,56 @@ form h4{
     font-size: 0.75rem; 
     color: var(--text-muted); 
 }
+
 .stat-item b { 
     font-size: 1rem; 
     color: var(--text-dark); 
+}
+
+#quiz-app .quiz-success-popup{
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 16px;
+}
+
+#quiz-app .quiz-success-popup.d-none{
+    display: none !important;
+}
+
+#quiz-app .quiz-success-popup .popup-card{
+    width: min(92vw, 360px);
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px 18px;
+    text-align: center;
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.25);
+    border-top: 4px solid #22c55e;
+}
+
+#quiz-app .quiz-success-popup .popup-icon{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #22c55e;
+    margin-bottom: 8px;
+}
+
+#quiz-app .quiz-success-popup h4{
+    color: #166534;
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+}
+
+#quiz-app .quiz-success-popup p{
+    margin: 0;
+    color: #475569;
+    font-size: 0.92rem;
 }
 
 /* Responsive Design */
@@ -2228,6 +2297,37 @@ form h4{
     .card-body { padding: 20px; }
     .question-text { font-size: 1.1rem; }
     .option-btn { padding: 12px; }
+
+    #quiz-app .quiz-success-popup {
+        padding: 12px;
+    }
+
+    #quiz-app .quiz-success-popup .popup-card {
+        width: 100%;
+        max-width: 320px;
+        border-radius: 12px;
+        padding: 16px 14px;
+    }
+
+    #quiz-app .quiz-success-popup .popup-icon {
+        font-size: 1.7rem;
+        margin-bottom: 6px;
+    }
+
+    #quiz-app .quiz-success-popup h4 {
+        font-size: 0.96rem;
+    }
+
+    #quiz-app .quiz-success-popup p {
+        font-size: 0.84rem;
+    }
+}
+
+@media (max-width: 360px) {
+    #quiz-app .quiz-success-popup .popup-card {
+        max-width: 290px;
+        padding: 14px 12px;
+    }
 }
 
 /* ---- Additional Global Responsive Fixes ---- */
@@ -2300,6 +2400,20 @@ html, body {
         padding-right: 12px;
     }
 
+    #courses .courses-container {
+        justify-content: stretch;
+        align-items: stretch;
+        gap: 12px;
+        padding-top: 16px;
+    }
+
+    #courses .courses-container .courseElement {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
     .profile-header {
         padding: 86px 12px 10px 94px;
     }
@@ -2366,9 +2480,28 @@ html, body {
 
 @media (max-width: 799px) {
     .sidebar {
+        display: block !important;
+        left: 0;
         top: 58px;
         width: 220px;
         height: calc(100vh - 58px);
+        z-index: 1001;
+        transform: translateX(0);
+        transition: transform 0.28s ease;
+    }
+
+    .sidebar.close {
+        transform: translateX(-115%);
+        width: 220px;
+    }
+
+    .sidebar.close .text {
+        opacity: 1;
+        left: 0;
+    }
+
+    .sidebar header .toggle {
+        right: -18px;
     }
 
     .home {
@@ -2381,6 +2514,26 @@ html, body {
         left: 0;
     }
 
+    .mobile-sidebar-toggle{
+        display: inline-flex;
+    }
+
+    .sidebar-overlay{
+        display: none;
+        position: fixed;
+        inset: 58px 0 0 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 1000;
+    }
+
+    .sidebar-overlay.active{
+        display: block;
+    }
+
+    body.sidebar-open-mobile{
+        overflow: hidden;
+    }
+
     #course-panel,
     #progress-pg,
     #topic-container,
@@ -2390,6 +2543,22 @@ html, body {
     #profile-box {
         padding-left: 14px;
         padding-right: 14px;
+    }
+
+    #courses .courses-container {
+        justify-content: stretch;
+        align-items: stretch;
+        gap: 12px;
+        padding-top: 18px;
+    }
+
+    #courses .courses-container .courseElement {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 14px 12px;
+        border-radius: 14px;
+        box-sizing: border-box;
     }
 
     .profile-header {
@@ -2481,7 +2650,7 @@ html, body {
     .course-detail-wrapper {
         height: auto;
         min-height: 60vh;
-        padding: 80px 12px 20px;
+        padding: 10px 12px 20px;
     }
 
     .course-card {
@@ -2541,6 +2710,11 @@ html, body {
     .topic-sidebar {
         padding: 10px;
     }
+
+    #courses .courses-container .courseElement {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 /* ---- Unified Button Theme (Navbar Match) ---- */
@@ -2561,7 +2735,6 @@ html, body {
     .link-btn a,
     .course-actions a,
     .course-actions button,
-    .topic-header button,
     .btn input[type="submit"],
     .btn input
 ) {
@@ -2585,12 +2758,29 @@ html, body {
     .link-btn a,
     .course-actions a,
     .course-actions button,
-    .topic-header button,
     .btn input[type="submit"],
     .btn input
 ):hover {
     background: linear-gradient(135deg, #0e3f6b, #1d7f68) !important;
     transform: translateY(-1px);
     box-shadow: 0 12px 24px rgba(15, 76, 129, 0.34) !important;
+}
+
+/* Keep video page next-topic action visually clean on purple header */
+.topic-header .next-btn{
+    background: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    text-decoration: none;
+}
+
+.topic-header .next-btn:hover{
+    background: transparent !important;
+    color: #dff5ff !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
     

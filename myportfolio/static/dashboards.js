@@ -2,6 +2,8 @@
 const body = document.querySelector("body"),
             sidebar = body.querySelector('.sidebar'),
             toggles = body.querySelector('.toggle'),
+            mobileSidebarToggle = body.querySelector('.mobile-sidebar-toggle'),
+            sidebarOverlay = body.querySelector('.sidebar-overlay'),
            
             modeSwitch = body.querySelector('.toggle-switch'),
             mode = body.querySelector('.mode'),
@@ -53,11 +55,32 @@ const body = document.querySelector("body"),
                 });
             }
 
-            if (toggles && sidebar) {
-                toggles.addEventListener('click', ()=>{
-                    sidebar.classList.toggle('close');
-                });
+            function toggleSidebar() {
+                if (!sidebar) return;
+                sidebar.classList.toggle('close');
+
+                const isMobile = window.innerWidth <= 799;
+                const isOpen = !sidebar.classList.contains('close');
+
+                if (isMobile) {
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.toggle('active', isOpen);
+                    }
+                    body.classList.toggle('sidebar-open-mobile', isOpen);
+                } else {
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('active');
+                    }
+                    body.classList.remove('sidebar-open-mobile');
+                }
             }
+
+            if (toggles && sidebar) {
+                toggles.addEventListener('click', toggleSidebar);
+            }
+
+            // Mobile sidebar toggle is handled in header2.html inline script.
+            // Keep this file responsible for desktop chevron toggle only.
 
             //Profile Image change
             

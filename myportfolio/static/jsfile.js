@@ -78,16 +78,24 @@ if (close){
 const smart = document.querySelector('.smart');
 
 function Smart(){
-    smart.style.animation = 'typing 3s steps(20)'; //it run only one time
+    if (!smart) return;
+    const textLength = smart.textContent.trim().length || 21;
+    smart.style.setProperty('--typing-width', `${textLength}ch`);
+    smart.style.animation = 'none';
+    void smart.offsetWidth;
+    smart.style.animation = `typing 2.4s steps(${textLength})`; // letter by letter typing
     setTimeout( ()=>{
         smart.style.animation = 'none';
         setTimeout( ()=>{ // it reapeated time of animation again and again
             Smart();
 
-        },3000);
+        },1200);
 
-    },5000); //it will pause the animation for some seconds
+    },3200); // shorter pause after full text appears
 }
-setTimeout(Smart,500);// it is the starting time of animation on reload page
+
+if (smart) {
+    setTimeout(Smart,500);// it is the starting time of animation on reload page
+}
 
 
