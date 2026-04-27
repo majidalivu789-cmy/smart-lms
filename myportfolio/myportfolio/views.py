@@ -51,6 +51,7 @@ def index(request):
         'founder_msg':founder_msg,
         'instructor':instructor,
         'Features': Features,
+        'title' : 'Home',
     }
     return render(request, 'index.html',data)
 
@@ -65,6 +66,7 @@ def about(request):
         'about':about,
         'features':features,
         'reviews': reviews,
+        'title' : 'About',
     }
     return render(request,'about.html',data)
 
@@ -80,6 +82,7 @@ def courses(request):
     data = {
         'courseData':courseData,
         'Title':Title,
+        'title' : 'Courses',
     }
     return render(request,'courses.html',data)
 
@@ -114,6 +117,7 @@ def contacts(request):
         'Title':Title,
         'form':form,
         'map_side' : map_side,
+        'title' : 'Contact Us',
     }
     return render(request,'contact.html',data)
 
