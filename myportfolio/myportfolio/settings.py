@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lnaaq%gx+lk$fe^$^9c379j3w7s19+*c3m*k60yfkmn(8c90g$'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-lnaaq%gx+lk$fe^$^9c379j3w7s19+*c3m*k60yfkmn(8c90g$')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["*"]  # Temporary for local/LAN testing
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 
 # Application definition
@@ -95,11 +95,11 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Slms_db',  # ye woh database name hai jo tu ne banaya
-        'USER': 'root',
-        'PASSWORD': 'Majid@123',  # jo tu ne installation ke time set kia
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME', 'Slms_db'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -269,5 +269,3 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn btn-success",
     },
 }
-
-
