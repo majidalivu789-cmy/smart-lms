@@ -24,8 +24,27 @@ class CourseWeekInline(admin.TabularInline):
 
 @admin.register(DashboardCourse)
 class DashboardCourseAdmin(admin.ModelAdmin):
-    list_display = ('course_title', 'course_fees', 'total_weeks', 'total_enrollments', 'paid_enrollments')
-    search_fields = ('course_title', 'course_fees', 'course_icon')
+    list_display = ('course_title', 'instructor', 'course_level', 'course_duration', 'course_fees', 'total_weeks', 'total_enrollments', 'paid_enrollments')
+    search_fields = ('course_title', 'course_fees', 'course_icon', 'course_des', 'instructor__instruct_name')
+    list_filter = ('instructor', 'course_level', 'course_duration')
+    fieldsets = (
+        ('Basic Course Info', {
+            'fields': ('instructor', 'course_icon', 'course_image', 'course_title', 'course_des', 'course_level', 'course_duration', 'course_fees')
+        }),
+        ('Professional Detail Page Content', {
+            'fields': (
+                'course_lessons',
+                'course_language',
+                'course_outline',
+                'course_outcomes',
+                'course_requirements',
+                'course_projects',
+                'course_certificate',
+                'course_support',
+                'course_enroll_note',
+            )
+        }),
+    )
     inlines = [CourseWeekInline]
 
     def total_weeks(self, obj):

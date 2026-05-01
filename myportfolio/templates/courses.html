@@ -11,11 +11,12 @@
         {% for n in courseData %}
         <div class="courseElement {{n.course_title}}">
             <img src="/media/{{n.course_image}}" alt="">
-            <h3>{{n.course_des}}</h3>
+            <h3>{{n.course_title}}</h3>
             <p class="duration"><strong>Duration:</strong> {{n.course_duration}}</p>
                 <p class="level"><strong>Level:</strong> {{n.course_level}}</p>
-            <div class="enroll-btn">
-                <button><a href="">Enroll Now</a></button>
+            <div class="course-list-actions">
+                <a href="{% url 'public_course_detail' n.id %}" class="course-detail-btn"><i class="fas fa-circle-info"></i> Details</a>
+                <a href="/login/" class="course-enroll-link"><i class="fas fa-user-plus"></i> Enroll</a>
             </div>
         </div>
         {% empty %}

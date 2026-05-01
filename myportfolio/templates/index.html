@@ -25,7 +25,6 @@
 
             <img src="/media/{{n.course_image}}" alt="Portfolio Project">
             <h3>{{n.course_title}}</h3>
-            <p>{{n.course_des}}</p>
             <div class="duration">
               <div class="time">
                 <i class="fa-regular fa-clock"></i><span>{{n.course_duration}}</span>
@@ -33,6 +32,10 @@
               <div class="price">
                 <strong>{{n.course_price}}</strong>
               </div>
+            </div>
+            <div class="course-card-actions">
+              <a href="{% url 'top_course_detail' n.id %}" class="course-detail-btn"><i class="fas fa-circle-info"></i> Details</a>
+              <a href="/login/" class="course-enroll-link"><i class="fas fa-user-plus"></i> Enroll</a>
             </div>
 
           </div>
@@ -71,12 +74,13 @@
       </div>
       
       <h3>{{i.instruct_name}}</h3>
-      <div class="content">
+      <a href="{% url 'instructor_detail' i.id%}"><i class="fas fa-user-tie"></i> Visit Profile</a>
+      {% comment %} <div class="content">
         <h4>{{i.instruct_skill}}</h4>
         <div class="des">
           <p>{{i.about_instruct}}</p>
         </div>
-      </div>
+      </div> {% endcomment %}
   </div>
     {% endfor %}  
   </div>

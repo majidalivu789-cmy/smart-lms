@@ -1,0 +1,128 @@
+{% include "header.html" %}
+
+<section class="public-course-hero">
+    <div class="public-course-wrap">
+        <div class="public-course-copy">
+            <a href="{{back_url}}" class="course-back"><i class="fas fa-arrow-left"></i> Back to Courses</a>
+            <span class="course-kicker">Course Details</span>
+            <h1>{{course.course_title}}</h1>
+            <p>{{course.course_des}}</p>
+            <div class="public-course-actions">
+                <a href="/login/" class="course-primary-btn"><i class="fas fa-user-plus"></i> Enroll Now</a>
+                <a href="#course-outline" class="course-secondary-btn"><i class="fas fa-list-check"></i> View Outline</a>
+            </div>
+        </div>
+
+        <div class="public-course-media">
+            {% if course.course_image %}
+            <img src="/media/{{course.course_image}}" alt="{{course.course_title}}">
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="public-course-details">
+    <div class="course-stat-grid">
+        <div class="course-stat">
+            <i class="fas fa-signal"></i>
+            <span>Level</span>
+            <strong>{{course.course_level|default:"Beginner"}}</strong>
+        </div>
+        <div class="course-stat">
+            <i class="fas fa-clock"></i>
+            <span>Duration</span>
+            <strong>{{course.course_duration|default:"Flexible"}}</strong>
+        </div>
+        <div class="course-stat">
+            <i class="fas fa-book-open"></i>
+            <span>Lessons</span>
+            <strong>{{course.course_lessons|default:"Updated soon"}}</strong>
+        </div>
+        <div class="course-stat">
+            <i class="fas fa-tag"></i>
+            <span>Fee</span>
+            <strong>{{course.course_price|default:"Free"}}</strong>
+        </div>
+    </div>
+
+    <div class="course-detail-grid">
+        <div class="course-detail-main">
+            <div class="course-info-panel" id="course-outline">
+                <h2>Course Outline</h2>
+                <ul>
+                    {% for item in outline %}
+                    <li><i class="fas fa-circle-check"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fas fa-circle-check"></i> Complete beginner-friendly course introduction</li>
+                    <li><i class="fas fa-circle-check"></i> Practical lessons with real examples</li>
+                    <li><i class="fas fa-circle-check"></i> Final practice and revision</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="course-info-panel">
+                <h2>What You Will Learn</h2>
+                <ul>
+                    {% for item in outcomes %}
+                    <li><i class="fas fa-graduation-cap"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fas fa-graduation-cap"></i> Build practical understanding of this course topic</li>
+                    <li><i class="fas fa-graduation-cap"></i> Practice with guided examples and tasks</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="course-info-panel">
+                <h2>Requirements</h2>
+                <ul>
+                    {% for item in requirements %}
+                    <li><i class="fas fa-check"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fas fa-check"></i> Basic computer knowledge</li>
+                    <li><i class="fas fa-check"></i> Interest in learning and practice</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="course-info-panel">
+                <h2>Practice & Projects</h2>
+                <ul>
+                    {% for item in projects %}
+                    <li><i class="fas fa-laptop-code"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fas fa-laptop-code"></i> Hands-on practice tasks</li>
+                    <li><i class="fas fa-laptop-code"></i> Course completion project</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <aside class="course-enroll-panel">
+            {% if course.instructor %}
+            <div class="course-instructor-card">
+                {% if course.instructor.instruct_img %}
+                <img src="/media/{{course.instructor.instruct_img}}" alt="{{course.instructor.instruct_name}}">
+                {% else %}
+                <img src="/media/default/user.png" alt="{{course.instructor.instruct_name}}">
+                {% endif %}
+                <div>
+                    <span>Instructor</span>
+                    <strong>{{course.instructor.instruct_name}}</strong>
+                    <p>{{course.instructor.detail.title|default:"Course Instructor"}}</p>
+                    <a href="{% url 'instructor_detail' course.instructor.id %}"><i class="fas fa-user-tie"></i> Visit Profile</a>
+                </div>
+            </div>
+            {% endif %}
+            <h3>Ready to start?</h3>
+            <p>{{course.course_enroll_note}}</p>
+            <div class="course-side-meta">
+                <span><i class="fas fa-language"></i> {{course.course_language|default:"English / Urdu"}}</span>
+                <span><i class="fas fa-certificate"></i> {{course.course_certificate}}</span>
+                <span><i class="fas fa-headset"></i> {{course.course_support}}</span>
+            </div>
+            <a href="/login/" class="course-primary-btn"><i class="fas fa-user-plus"></i> Enroll Now</a>
+        </aside>
+    </div>
+</section>
+
+{% include "dynamic_footer.html" %}

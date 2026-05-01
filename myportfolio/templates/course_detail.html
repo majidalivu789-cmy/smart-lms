@@ -12,13 +12,20 @@
 </section>
 <section class="course-detail-wrapper">
 
-    <div class="course-card">
+    <div class="course-card dashboard-course-detail-card">
 
         <!-- Header -->
         <div class="course-header">
+            {% if course.course_image %}
+            <img src="/media/{{course.course_image}}" alt="{{course.course_title}}" class="dashboard-course-img">
+            {% else %}
             <i class="{{ course.course_icon }}"></i>
+            {% endif %}
             <div class="course-title">
                 <h2>{{ course.course_title }}</h2>
+                {% if course.course_des %}
+                <p>{{course.course_des}}</p>
+                {% endif %}
                 <p><strong>Course Fee:</strong> {{ course.course_fees }}</p>
             </div>
         </div>
@@ -26,28 +33,88 @@
         <!-- Course Info -->
         <div class="course-info">
             <p>
-                <span><i class="fa-solid fa-circle-check"></i></span>
-                Full access to all weeks & lectures
+                <span><i class="fa-solid fa-signal"></i></span>
+                {{course.course_level|default:"Beginner"}}
             </p>
             <p>
-                <span><i class="fa-solid fa-circle-check"></i></span>
-                Learn at your own pace
+                <span><i class="fa-solid fa-clock"></i></span>
+                {{course.course_duration|default:"Flexible"}}
             </p>
             <p>
-                <span><i class="fa-solid fa-circle-check"></i></span>
-                Dashboard video access
+                <span><i class="fa-solid fa-book-open"></i></span>
+                {{course.course_lessons|default:"Lessons updated soon"}}
             </p>
             <p>
-                <span><i class="fa-solid fa-circle-check"></i></span>
-                Certificate after completion
+                <span><i class="fa-solid fa-language"></i></span>
+                {{course.course_language|default:"English / Urdu"}}
             </p>
+        </div>
+
+        {% if course.instructor %}
+        <div class="dashboard-course-instructor">
+            {% if course.instructor.instruct_img %}
+            <img src="/media/{{course.instructor.instruct_img}}" alt="{{course.instructor.instruct_name}}">
+            {% else %}
+            <img src="/media/default/user.png" alt="{{course.instructor.instruct_name}}">
+            {% endif %}
+            <div>
+                <span>Instructor</span>
+                <strong>{{course.instructor.instruct_name}}</strong>
+                <p>{{course.instructor.detail.title|default:"Course Instructor"}}</p>
+                <a href="{% url 'instructor_detail' course.instructor.id %}"><i class="fas fa-user-tie"></i> Visit Profile</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="dashboard-detail-grid">
+            <div>
+                <h3>Course Outline</h3>
+                <ul>
+                    {% for item in outline %}
+                    <li><i class="fa-solid fa-circle-check"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fa-solid fa-circle-check"></i> Full access to all weeks & lectures</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Dashboard video access</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h3>What You Will Learn</h3>
+                <ul>
+                    {% for item in outcomes %}
+                    <li><i class="fa-solid fa-graduation-cap"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fa-solid fa-graduation-cap"></i> Learn at your own pace</li>
+                    <li><i class="fa-solid fa-graduation-cap"></i> Practice with guided lectures</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h3>Requirements</h3>
+                <ul>
+                    {% for item in requirements %}
+                    <li><i class="fa-solid fa-check"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fa-solid fa-check"></i> Basic computer knowledge</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h3>Projects & Practice</h3>
+                <ul>
+                    {% for item in projects %}
+                    <li><i class="fa-solid fa-laptop-code"></i> {{item}}</li>
+                    {% empty %}
+                    <li><i class="fa-solid fa-laptop-code"></i> Hands-on practice tasks</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
 
         <!-- Confirmation Message -->
         <div class="course-warning">
             <span><i class="fa-solid fa-triangle-exclamation"></i></span>
-           <p>Please confirm before enrolling.  
-            This course will be unlocked on your dashboard after enrollment.</p> 
+           <p>{{course.course_enroll_note}}</p> 
         </div>
 
         <!-- Action Buttons -->

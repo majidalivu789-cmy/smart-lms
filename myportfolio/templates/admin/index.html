@@ -102,7 +102,42 @@
                 </button>
 
                 <div class="lms-app-models" id="app-models-{{ forloop.counter }}">
+                    {% if app.app_label == "Home_Page" %}
+                    <div class="lms-nested-card">
+                        <button type="button" class="lms-nested-toggle" data-target="instructor-models-{{ forloop.counter }}">
+                            <span>Instructor Settings</span>
+                            <span class="lms-nested-arrow">+</span>
+                        </button>
+                        <div class="lms-nested-models" id="instructor-models-{{ forloop.counter }}">
+                            {% for model in app.models %}
+                                {% if model.object_name == "Instructor" or model.object_name == "InstructorDetail" or model.object_name == "InstructorCourse" or model.object_name == "InstructorReview" %}
+                                <div class="lms-model-row">
+                                    <div class="lms-model-name">
+                                        {% if model.admin_url %}
+                                            <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                                        {% else %}
+                                            {{ model.name }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="lms-model-actions">
+                                        {% if model.add_url %}
+                                            <a href="{{ model.add_url }}" class="lms-model-link">Add</a>
+                                        {% endif %}
+                                        {% if model.admin_url %}
+                                            <a href="{{ model.admin_url }}" class="lms-model-link">View</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
                     {% for model in app.models %}
+                    {% if app.app_label == "Home_Page" and model.object_name == "Instructor" or app.app_label == "Home_Page" and model.object_name == "InstructorDetail" or app.app_label == "Home_Page" and model.object_name == "InstructorCourse" or app.app_label == "Home_Page" and model.object_name == "InstructorReview" %}
+                    {% else %}
                     <div class="lms-model-row">
                         <div class="lms-model-name">
                             {% if model.admin_url %}
@@ -121,6 +156,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% endif %}
                     {% empty %}
                     <p class="lms-empty-text">No models available in this app.</p>
                     {% endfor %}
@@ -161,6 +197,28 @@
             button.classList.remove('open');
             arrow.textContent = '+';
         }
+
+        button.addEventListener('click', function () {
+            const isOpen = targetElement.style.display === 'block';
+            targetElement.style.display = isOpen ? 'none' : 'block';
+            button.classList.toggle('open', !isOpen);
+            arrow.textContent = isOpen ? '+' : '-';
+        });
+    });
+
+    const nestedToggleButtons = document.querySelectorAll('.lms-nested-toggle');
+    nestedToggleButtons.forEach(function (button) {
+        const targetId = button.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+        const arrow = button.querySelector('.lms-nested-arrow');
+
+        if (!targetElement || !arrow) {
+            return;
+        }
+
+        targetElement.style.display = 'none';
+        button.classList.remove('open');
+        arrow.textContent = '+';
 
         button.addEventListener('click', function () {
             const isOpen = targetElement.style.display === 'block';

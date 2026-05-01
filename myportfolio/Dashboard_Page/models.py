@@ -5,9 +5,23 @@ from django.contrib.auth.models import User
 
 # Dashboard Courses Data
 class DashboardCourse(models.Model):
+    instructor = models.ForeignKey('Home_Page.Instructor', on_delete=models.SET_NULL, null=True, blank=True, related_name='dashboard_course_details')
     course_icon = models.CharField(max_length=200)
+    course_image = models.FileField(upload_to='courses/', max_length=250, null=True, blank=True, default=None)
     course_title = models.CharField(max_length=200)
+    course_des = models.TextField(blank=True, default='')
+    course_level = models.CharField(max_length=55, blank=True, default='Beginner')
+    course_duration = models.CharField(max_length=55, blank=True, default='Flexible')
     course_fees = models.CharField(max_length=55)
+    course_lessons = models.CharField(max_length=55, blank=True, default='')
+    course_language = models.CharField(max_length=55, blank=True, default='English / Urdu')
+    course_outline = models.TextField(blank=True, default='', help_text='Write each outline point on a new line.')
+    course_outcomes = models.TextField(blank=True, default='', help_text='Write each learning outcome on a new line.')
+    course_requirements = models.TextField(blank=True, default='', help_text='Write each requirement on a new line.')
+    course_projects = models.TextField(blank=True, default='', help_text='Write each project/practice item on a new line.')
+    course_certificate = models.CharField(max_length=150, blank=True, default='Certificate after completion')
+    course_support = models.CharField(max_length=150, blank=True, default='Student support')
+    course_enroll_note = models.TextField(blank=True, default='Please confirm before enrolling. This course will be unlocked on your dashboard after enrollment.')
     def __str__(self):
         return self.course_title
     

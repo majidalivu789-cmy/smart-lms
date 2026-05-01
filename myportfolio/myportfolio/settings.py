@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 
+import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +23,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lnaaq%gx+lk$fe^$^9c379j3w7s19+*c3m*k60yfkmn(8c90g$'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-lnaaq%gx+lk$fe^$^9c379j3w7s19+*c3m*k60yfkmn(8c90g$',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in {'1', 'true', 'yes', 'on'}
 
-ALLOWED_HOSTS = ["*"]  # Temporary for local/LAN testing
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+    if host.strip()
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+]
 
 
 # Application definition
@@ -51,13 +66,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', #for railway host
 ]
 
 
@@ -66,7 +81,7 @@ ROOT_URLCONF = 'myportfolio.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR, 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,21 +102,31 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Slms_db',  # ye woh database name hai jo tu ne banaya
-        'USER': 'root',
-        'PASSWORD': 'Majid@123',  # jo tu ne installation ke time set kia
-        'HOST': 'localhost',
-        'PORT': '3306',
+if DATABASE_URL:
+    db_url = urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': db_url.path.lstrip('/'),
+            'USER': db_url.username,
+            'PASSWORD': db_url.password,
+            'HOST': db_url.hostname,
+            'PORT': db_url.port or '5432',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('MYSQL_DATABASE', 'Slms_db'),
+            'USER': os.environ.get('MYSQL_USER', 'root'),
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'Majid@123'),
+            'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
+            'PORT': os.environ.get('MYSQL_PORT', '3306'),
+        }
+    }
 
 
 # Password validation
@@ -142,9 +167,19 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS =[
     BASE_DIR / 'static'
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 MEDIA_ROOT = BASE_DIR /'media'
 MEDIA_URL = '/media/'
+SERVE_MEDIA_LOCALLY = os.environ.get('SERVE_MEDIA_LOCALLY', str(DEBUG)).lower() in {'1', 'true', 'yes', 'on'}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -153,9 +188,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'majidalivu486@gmail.com'
-EMAIL_HOST_PASSWORD = 'vace ewwy mnoa wiok'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'majidalivu486@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 # ---------------- Django Admin Theme ----------------
@@ -172,15 +213,38 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": True,
     "show_ui_builder": False,
     "custom_css": "admin_custom/admin_extra.css",
+    "custom_js": "admin_custom/admin_extra.js",
     "order_with_respect_to": [
         "auth",
         "Dashboard_Page",
         "Mycourses",
         "Contact_Page",
         "About_Page",
+        "Instructor",
         "Home_Page",
     ],
     "custom_links": {
+        "Instructor": [{
+            "name": "Instructors",
+            "url": "/admin/Home_Page/instructor/",
+            "icon": "fas fa-chalkboard-teacher",
+            "permissions": ["Home_Page.view_instructor"],
+        }, {
+            "name": "Instructor Details",
+            "url": "/admin/Home_Page/instructordetail/",
+            "icon": "fas fa-id-card",
+            "permissions": ["Home_Page.view_instructordetail"],
+        }, {
+            "name": "Instructor Courses",
+            "url": "/admin/Home_Page/instructorcourse/",
+            "icon": "fas fa-book",
+            "permissions": ["Home_Page.view_instructorcourse"],
+        }, {
+            "name": "Instructor Reviews",
+            "url": "/admin/Home_Page/instructorreview/",
+            "icon": "fas fa-star-half-stroke",
+            "permissions": ["Home_Page.view_instructorreview"],
+        }],
         "Dashboard_Page": [{
             "name": "Enrollments",
             "url": "admin:Dashboard_Page_enrollment_changelist",
@@ -206,6 +270,7 @@ JAZZMIN_SETTINGS = {
         {"app": "Contact_Page"},
         {"app": "Mycourses"},
         {"app": "About_Page"},
+        {"name": "Instructor", "url": "/admin/Home_Page/instructor/", "permissions": ["Home_Page.view_instructor"]},
         {"app": "Home_Page"},
     ],
     "icons": {
@@ -231,6 +296,9 @@ JAZZMIN_SETTINGS = {
         "Home_Page.FounderMessage": "fas fa-comment-dots",
         "Home_Page.Feature": "fas fa-star",
         "Home_Page.Instructor": "fas fa-chalkboard-teacher",
+        "Home_Page.InstructorCourse": "fas fa-book",
+        "Home_Page.InstructorDetail": "fas fa-id-card",
+        "Home_Page.InstructorReview": "fas fa-star-half-stroke",
         "Home_Page.Top_Courses": "fas fa-fire",
         "Home_Page.FooterSettings": "fas fa-sliders",
         "Home_Page.FooterLink": "fas fa-paperclip",

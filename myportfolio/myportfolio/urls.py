@@ -1,14 +1,18 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from myportfolio import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.views.static import serve
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index,name='index'),
+    path('instructor/<int:id>/', views.instructor, name='instructor_detail'),
+    path('top-course/<int:course_id>/', views.top_course_detail, name='top_course_detail'),
+    path('courses/<int:course_id>/', views.public_course_detail, name='public_course_detail'),
     path('about/',views.about),
     path('courses/',views.courses),
     path('login/',views.login_view,name='login'),
@@ -72,4 +76,8 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns+=static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+elif settings.SERVE_MEDIA_LOCALLY:
+    urlpatterns += [
+        re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
+    ]

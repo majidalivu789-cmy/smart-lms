@@ -19,7 +19,7 @@ from Mycourses.models import myCourses
 from Home_Page.models import Logo
 from Home_Page.models import Top_Courses
 from Home_Page.models import FounderMessage
-from Home_Page.models import Instructor
+from Home_Page.models import Instructor, InstructorCourse, InstructorDetail, InstructorReview
 from Home_Page.models import Feature
 from About_Page.models import AboutSml
 from About_Page.models import AboutFeature
@@ -41,12 +41,14 @@ from datetime import timedelta
 #Home Page
 def index(request):
     Title = Logo.objects.all()
+    fav_icon = Logo.objects.first()
     topCourses = Top_Courses.objects.all()
     founder_msg = FounderMessage.objects.all()
     instructor =Instructor.objects.all()
     Features = Feature.objects.all()
     data ={
         'Title':Title,
+        'fav_icon' : fav_icon,
         'topCourses':topCourses,
         'founder_msg':founder_msg,
         'instructor':instructor,
@@ -57,11 +59,13 @@ def index(request):
 
 #About Page
 def about(request):
+    fav_icon = Logo.objects.first()
     Title = Logo.objects.all()
     about = AboutSml.objects.all()
     features = AboutFeature.objects.all()
     reviews = StudentReview.objects.filter(is_active=True).order_by('display_order', '-created_at')
     data ={
+        'fav_icon' : fav_icon,
         'Title':Title,
         'about':about,
         'features':features,
@@ -71,24 +75,71 @@ def about(request):
     return render(request,'about.html',data)
 
 #courses Page
+# Paginator 
+from django.core.paginator import Paginator
 def courses(request):
+    fav_icon = Logo.objects.first()
     Title = Logo.objects.all()
-    courseData = myCourses.objects.all()  
+    courseData = myCourses.objects.all().order_by('id') 
+    paginator = Paginator(courseData,8)
+    page_number = request.GET.get('page')
+    courseDataFinal = paginator.get_page(page_number)
+
     if request.method == 'GET':
         des = request.GET.get('c_title')
     if des != None:
-     courseData = myCourses.objects.filter(course_des__icontains = des)
+      courseDataFinal  = myCourses.objects.filter(course_des__icontains = des).order_by('id')
 
     data = {
-        'courseData':courseData,
+        'fav_icon' : fav_icon,
+        'courseData':courseDataFinal,
         'Title':Title,
         'title' : 'Courses',
+        
     }
     return render(request,'courses.html',data)
 
+
+def top_course_detail(request, course_id):
+    fav_icon = Logo.objects.first()
+    Title = Logo.objects.all()
+    course = get_object_or_404(Top_Courses.objects.select_related('instructor', 'instructor__detail'), id=course_id)
+    data = {
+        'fav_icon': fav_icon,
+        'Title': Title,
+        'course': course,
+        'course_source': 'top',
+        'back_url': '/',
+        'title': course.course_title,
+        'outline': [item.strip() for item in course.course_outline.splitlines() if item.strip()],
+        'outcomes': [item.strip() for item in course.course_outcomes.splitlines() if item.strip()],
+        'requirements': [item.strip() for item in course.course_requirements.splitlines() if item.strip()],
+        'projects': [item.strip() for item in course.course_projects.splitlines() if item.strip()],
+    }
+    return render(request, 'public_course_detail.html', data)
+
+
+def public_course_detail(request, course_id):
+    fav_icon = Logo.objects.first()
+    Title = Logo.objects.all()
+    course = get_object_or_404(myCourses.objects.select_related('instructor', 'instructor__detail'), id=course_id)
+    data = {
+        'fav_icon': fav_icon,
+        'Title': Title,
+        'course': course,
+        'course_source': 'public',
+        'back_url': '/courses/',
+        'title': course.course_title,
+        'outline': [item.strip() for item in course.course_outline.splitlines() if item.strip()],
+        'outcomes': [item.strip() for item in course.course_outcomes.splitlines() if item.strip()],
+        'requirements': [item.strip() for item in course.course_requirements.splitlines() if item.strip()],
+        'projects': [item.strip() for item in course.course_projects.splitlines() if item.strip()],
+    }
+    return render(request, 'public_course_detail.html', data)
+
 #contact Page
 def contacts(request):
-    
+    fav_icon = Logo.objects.first()
     map_side = MapSide.objects.all()
     form = ContactForm()
     contact =''
@@ -114,6 +165,7 @@ def contacts(request):
 
     Title = Logo.objects.all()
     data ={
+        'fav_icon' : fav_icon,
         'Title':Title,
         'form':form,
         'map_side' : map_side,
@@ -201,6 +253,7 @@ def enrollnow(request):
 #Dashboard 
 @login_required
 def dashboard(request):
+    
     profile = ProfileImage.objects.first()
 
     enrollments = Enrollment.objects.filter(
@@ -459,16 +512,22 @@ def fees_page(request, enrollment_id):
 # ----- Course Deatials Page ------
 @login_required
 def course_detail (request, course_id):
-    course = get_object_or_404(DashboardCourse, id = course_id)
+    course = get_object_or_404(DashboardCourse.objects.select_related('instructor', 'instructor__detail'), id = course_id)
 
     enrollment = Enrollment.objects.filter(
         user = request.user,
         course = course
     ).first()
 
-    return render(request, 'course_detail.html',
-                  {'course':course,
-                  'enrollment' : enrollment})
+    data = {
+        'course': course,
+        'enrollment': enrollment,
+        'outline': [item.strip() for item in course.course_outline.splitlines() if item.strip()],
+        'outcomes': [item.strip() for item in course.course_outcomes.splitlines() if item.strip()],
+        'requirements': [item.strip() for item in course.course_requirements.splitlines() if item.strip()],
+        'projects': [item.strip() for item in course.course_projects.splitlines() if item.strip()],
+    }
+    return render(request, 'course_detail.html', data)
 
 
 # --------- Dynamic Video page -------
@@ -557,3 +616,56 @@ def save_progress(request):
             day_rec.save()
 
         return JsonResponse({'status': 'saved'})
+
+def instructor(request, id):
+    instructor_single = get_object_or_404(Instructor, id = id)
+    detail = InstructorDetail.objects.filter(instructor=instructor_single).first()
+    courses = InstructorCourse.objects.filter(instructor=instructor_single)
+    reviews = InstructorReview.objects.filter(instructor=instructor_single, is_active=True)
+    skills = []
+    projects = []
+    qualifications = []
+
+    if detail:
+        if detail.skills:
+            skills = [skill.strip() for skill in detail.skills.split(',') if skill.strip()]
+
+        if detail.project_title_1:
+            projects.append({
+                'title': detail.project_title_1,
+                'description': detail.project_des_1,
+                'link': detail.project_link_1,
+            })
+        if detail.project_title_2:
+            projects.append({
+                'title': detail.project_title_2,
+                'description': detail.project_des_2,
+                'link': detail.project_link_2,
+            })
+
+        if detail.qualification_1:
+            qualifications.append({
+                'name': detail.qualification_1,
+                'from': detail.qualification_from_1,
+            })
+        if detail.qualification_2:
+            qualifications.append({
+                'name': detail.qualification_2,
+                'from': detail.qualification_from_2,
+            })
+
+    Title = Logo.objects.all()
+    fav_icon = Logo.objects.first()
+    data = {
+        'fav_icon' : fav_icon,
+        'Title':Title,
+        'title' : 'Instructors',
+        'ins' : instructor_single,
+        'detail': detail,
+        'skills': skills,
+        'projects': projects,
+        'qualifications': qualifications,
+        'courses': courses,
+        'reviews': reviews,
+    }
+    return render(request, 'instructor_detail.html',data)

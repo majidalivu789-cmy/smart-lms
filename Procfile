@@ -1,1 +1,1 @@
-web: gunicorn smart_lms.wsgi
+web: gunicorn myportfolio.wsgi:application --chdir myportfolio

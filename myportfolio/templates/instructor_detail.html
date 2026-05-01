@@ -1,0 +1,204 @@
+{% include 'header.html' %}
+<section>
+     <div class="header-banner">
+        <div class="back">
+            <a href="/"><i class="fas fa-arrow-left"></i></a>
+        </div>
+     </div>
+</section>
+<section id="mentor">
+    <div class="container">
+        <!-- Header Section -->
+        <header class="profile-header">
+            <div class="profile-card">
+                <div class="profile-info">
+                    {% if ins.instruct_img %}
+                    <img src="/media/{{ins.instruct_img}}" alt="{{ins.instruct_name}}" class="profile-img">
+                    {% else %}
+                    <img src="/media/default/user.png" alt="{{ins.instruct_name}}" class="profile-img">
+                    {% endif %}
+                    <div class="profile-details">
+                        <h1>{{ins.instruct_name}}</h1>
+                        <p class="title">{{detail.title|default:"Instructor"}}</p>
+                        <p class="exp">{{detail.experience|default:"Experience will be added soon"}}</p>
+                        <div class="stats">
+                            <span><i class="fas fa-star"></i> {{detail.rating|default:"New"}} rating</span>
+                            <span><i class="fas fa-users"></i> {{detail.students|default:"0"}} students</span>
+                            <span><i class="fas fa-book-open"></i> {{detail.courses_count|default:"0"}} courses</span>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-follow">Let's Connect <i class="fas fa-arrow-right"></i></button>
+                            <div class="social-links">
+                                <a href="{{detail.linkedin|default:'#'}}"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="{{detail.github|default:'#'}}"><i class="fab fa-github"></i></a>
+                                <a href="{{detail.twitter|default:'#'}}"><i class="fab fa-youtube"></i></a>
+                                <a href="{{detail.facebook|default:'#'}}"><i class="fab fa-facebook-f"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'about')">About</button>
+            <button class="tab-btn" onclick="openTab(event, 'courses')">Courses</button>
+            <button class="tab-btn" onclick="openTab(event, 'reviews')">Reviews</button>
+        </nav>
+
+        <!-- Tab Contents -->
+        <main class="content-area">
+            <!-- About Section -->
+            <section id="about" class="tab-content active">
+                <div class="card">
+                    <h3>About Instructor</h3>
+                    <p>{{detail.about|default:"Instructor detail will be added soon."}}</p>
+                </div>
+
+                <div class="card">
+                    <h3>Skills</h3>
+                    <div class="skills-tags">
+                        {% for skill in skills %}
+                        <span class="tag">{{skill}}</span>
+                        {% empty %}
+                        <span class="tag">Skills will be added soon</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Projects & Portfolio</h3>
+                    <div class="projects-grid">
+                        {% for project in projects %}
+                        <div class="project-item">
+                            <h4>{{project.title}}</h4>
+                            <p>{{project.description}}</p>
+                            {% if project.link %}
+                            <a href="{{project.link}}">View Project &rarr;</a>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <div class="project-item">
+                            <h4>Projects will be added soon</h4>
+                            <p>Portfolio details are not uploaded yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Qualifications & Certifications</h3>
+                    <ul class="timeline">
+                        {% for qualification in qualifications %}
+                        <li>
+                            <div class="dot"></div>
+                            <strong>{{qualification.name}}</strong>
+                            <span>{{qualification.from}}</span>
+                        </li>
+                        {% empty %}
+                        <li>
+                            <div class="dot"></div>
+                            <strong>Qualifications will be added soon</strong>
+                            <span>Admin can upload this detail.</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Courses Section -->
+            <section id="courses" class="tab-content">
+                <div class="card">
+                    <h3>Courses by Instructor</h3>
+                    <div class="courses-grid">
+                        {% for course in courses %}
+                        <div class="course-card">
+                            {% if course.course_image %}
+                            <img src="/media/{{course.course_image}}" alt="{{course.course_title}}">
+                            {% endif %}
+                            <div class="course-info">
+                                <h4>{{course.course_title}}</h4>
+                                <p>{{course.course_des}}</p>
+                                <p>
+                                    {% if course.course_duration %}
+                                    <span><i class="fas fa-clock"></i> {{course.course_duration}}</span>
+                                    {% endif %}
+                                    {% if course.course_level %}
+                                    <span>{{course.course_level}}</span>
+                                    {% endif %}
+                                    {% if course.course_price %}
+                                    <span>{{course.course_price}}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>Courses by this instructor will be added soon.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section id="reviews" class="tab-content">
+                <div class="card">
+                    <h3>Student Reviews</h3>
+                    {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            {% if review.student_image %}
+                            <img src="/media/{{review.student_image}}" class="rev-img">
+                            {% else %}
+                            <img src="/media/default/user.png" class="rev-img">
+                            {% endif %}
+                            <div>
+                                <strong>{{review.student_name}}</strong>
+                                <div class="stars">
+                                    {% if review.rating >= 1 %}<i class="fas fa-star"></i>{% endif %}
+                                    {% if review.rating >= 2 %}<i class="fas fa-star"></i>{% endif %}
+                                    {% if review.rating >= 3 %}<i class="fas fa-star"></i>{% endif %}
+                                    {% if review.rating >= 4 %}<i class="fas fa-star"></i>{% endif %}
+                                    {% if review.rating >= 5 %}<i class="fas fa-star"></i>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <p>{{review.review_text}}</p>
+                    </div>
+                    {% empty %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            {% if ins.instruct_img %}
+                            <img src="/media/{{ins.instruct_img}}" class="rev-img">
+                            {% else %}
+                            <img src="/media/default/user.png" class="rev-img">
+                            {% endif %}
+                            <div>
+                                <strong>Student Review</strong>
+                                <div class="stars"><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i></div>
+                            </div>
+                        </div>
+                        <p>Reviews for {{ins.instruct_name}} will be added soon.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+</section>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+{% include 'footer.html' %}

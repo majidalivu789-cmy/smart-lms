@@ -12,23 +12,27 @@
 
        {% for c in myCourses %}
         <div class="courseElement">
-            
+            {% if c.course_image %}
+            <img src="/media/{{c.course_image}}" alt="{{c.course_title}}">
+            {% else %}
             <i class="{{c.course_icon}}"></i> 
+            {% endif %}
             <h4> {{c.course_title}} </h4>
+            {% if c.course_des %}
+            <p class="dashboard-course-des">{{c.course_des}}</p>
+            {% endif %}
+            <p class="duration"><strong>Duration: </strong>{{c.course_duration}}</p>
+            <p class="level"><strong>Level: </strong>{{c.course_level}}</p>
             <p class="fees"><strong>Fee: </strong>{{c.course_fees}}</p>
                 
            
-            <div class="enroll-btn">
+            <div class="course-list-actions">
     {% if c.id in enrolled_ids %}
-        <button disabled style="background:gray;color:white;">
-            Already Enrolled
-        </button>
+        <a href="{% url 'course_detail' c.id %}" class="course-detail-btn"><i class="fas fa-circle-info"></i> Details</a>
+        <span class="course-enrolled-badge"><i class="fas fa-circle-check"></i> Enrolled</span>
     {% else %}
-        <button class="btn btn-primary w-100 enroll-btn">
-            <a href="{% url 'course_detail' c.id %}" class="enroll-btn">
-                Enroll Now
-            </a>
-        </button>
+        <a href="{% url 'course_detail' c.id %}" class="course-detail-btn"><i class="fas fa-circle-info"></i> Details</a>
+        <a href="{% url 'course_detail' c.id %}" class="course-enroll-link"><i class="fas fa-user-plus"></i> Enroll</a>
     {% endif %}
     </div>
 
